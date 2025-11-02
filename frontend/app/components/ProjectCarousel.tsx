@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ProjectCard from "./ProjectCard";
 
@@ -15,9 +15,10 @@ interface Project {
 interface ProjectCarouselProps {
   projects: Project[];
   itemsPerPage?: number;
+  autoplayInterval?: number;
 }
 
-export default function ProjectCarousel({ projects, itemsPerPage = 3 }: ProjectCarouselProps) {
+export default function ProjectCarousel({ projects, itemsPerPage = 3, autoplayInterval = 5000 }: ProjectCarouselProps) {
   const [page, setPage] = useState(0);
 
   const totalPages = Math.ceil(projects.length / itemsPerPage);
@@ -26,6 +27,12 @@ export default function ProjectCarousel({ projects, itemsPerPage = 3 }: ProjectC
 
   const handleNext = () => setPage((prev) => (prev + 1) % totalPages);
   const handlePrev = () => setPage((prev) => (prev - 1 + totalPages) % totalPages);
+
+  // Autoplay the slides
+  useEffect(() => {
+    const timer = setInterval(() => handleNext(), autoplayInterval);
+    return () => clearInterval(timer);
+  }, [page, autoplayInterval])
 
   return (
     <div className="relative m-1.5">
@@ -63,17 +70,37 @@ export default function ProjectCarousel({ projects, itemsPerPage = 3 }: ProjectC
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right-icon lucide-arrow-right"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
       </button>
 
-      {/* Pagination dots */}
-      <div className="flex justify-center mt-3 space-x-2">
-        {Array.from({ length: totalPages }).map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setPage(i)}
-            className={`h-2 w-2 rounded-full ${
-              i === page ? "bg-indigo-600" : "bg-gray-300"
-            }`}
-          />
-        ))}
+      {/* Pagination dots with active progress bar */}
+      <div className="flex justify-center mt-3 space-x-2 items-center">
+        {Array.from({ length: totalPages }).map((_, i) => {
+          const isActive = i === page;
+
+          return (
+            <button
+              key={i}
+              onClick={() => setPage(i)}
+              className="relative h-2 w-2 flex items-center justify-center"
+            >
+              {/* Inactive dot */}
+              {!isActive && (
+                <div className="h-2 w-2 rounded-full bg-gray-300" />
+              )}
+
+              {/* Active progress bar */}
+              {isActive && (
+                <div className="h-2 w-6 rounded-full bg-gray-300 overflow-hidden">
+                  <motion.div
+                    key={page}  // restart animation every page change
+                    initial={{ width: 0 }}
+                    animate={{ width: "100%" }}
+                    transition={{ duration: autoplayInterval / 1000, ease: "linear" }}
+                    className="h-full bg-indigo-600"
+                  />
+                </div>
+              )}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
