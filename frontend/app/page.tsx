@@ -1,5 +1,5 @@
-// app/page.tsx
 import ProjectCard from "@/app/components/ProjectCard";
+import ProjectCarousel from "./components/ProjectCarousel";
 
 export default function HomePage() {
   // Placeholder data for now
@@ -25,6 +25,12 @@ export default function HomePage() {
       status: "Ongoing" as const,
       skills: ["Next.js", "OpenAI API", "UX Design"],
     },
+    {
+      title: "Portfolio Website",
+      description: "A responsive developer portfolio built with Next.js and Tailwind.",
+      status: "Ongoing" as const,
+      skills: ["Next.js", "Tailwind", "Vercel"],
+    },
   ];
 
   const completedProjects = [
@@ -49,6 +55,12 @@ export default function HomePage() {
       status: "Completed" as const,
       skills: ["Java", "OOP"],
     },
+    {
+      title: "German Article Trainer",
+      description: "A web app to practice 'der, die, das' with spaced repetition.",
+      status: "Completed" as const,
+      skills: ["Python", "JavaScript", "CSS", "HTML", "Webscraping"],
+    },
   ];
 
   return (
@@ -56,31 +68,21 @@ export default function HomePage() {
       {/* Placeholder for Profile */}
       <section className="mb-12 text-center">
         <h1 className="text-3xl font-bold mb-2">Welcome👋</h1>
-        <p>Here's an overview of Leon</p>
+        <p>Here's an overview of Leon's profile</p>
       </section>
 
       {/* Project Snapshot Section */}
       <section className="mb-16">
         <h2 className="text-2xl font-semibold mb-6">Projects Snapshot</h2>
 
-        {/* Ongoing Projects */}
         <div className="mb-10">
           <h3 className="text-lg font-semibold mb-3 text-green-700">Ongoing</h3>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {ongoingProjects.map((project, idx) => (
-              <ProjectCard key={idx} {...project} />
-            ))}
-          </div>
+          <ProjectCarousel projects={ongoingProjects} />
         </div>
 
-        {/* Completed Projects */}
         <div>
-          <h3 className="text-lg font-semibold mb-3">Completed</h3>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {completedProjects.map((project, idx) => (
-              <ProjectCard key={idx} {...project}/>
-            ))}
-          </div>
+          <h3 className="text-lg font-semibold mb-3 text-gray-700">Completed</h3>
+          <ProjectCarousel projects={completedProjects} />
         </div>
       </section>
 
