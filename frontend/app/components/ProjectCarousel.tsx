@@ -20,13 +20,20 @@ interface ProjectCarouselProps {
 
 export default function ProjectCarousel({ projects, itemsPerPage = 3, autoplayInterval = 5000 }: ProjectCarouselProps) {
   const [page, setPage] = useState(0);
+  const [direction, setDirection] = useState(1); // 1 for next page (to the right)
 
   const totalPages = Math.ceil(projects.length / itemsPerPage);
   const startIdx = page * itemsPerPage;
   const visibleProjects = projects.slice(startIdx, startIdx + itemsPerPage);
 
-  const handleNext = () => setPage((prev) => (prev + 1) % totalPages);
-  const handlePrev = () => setPage((prev) => (prev - 1 + totalPages) % totalPages);
+  const handleNext = () => {
+    setDirection(1);
+    setPage((prev) => (prev + 1) % totalPages);
+  }
+  const handlePrev = () => {
+    setDirection(0);
+    setPage((prev) => (prev - 1 + totalPages) % totalPages);
+  }
 
   // Autoplay the slides
   useEffect(() => {
@@ -38,13 +45,30 @@ export default function ProjectCarousel({ projects, itemsPerPage = 3, autoplayIn
     <div className="relative m-1.5">
       {/* Project cards */}
       <div className="overflow-hidden p-5">
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={page}
+            // swiping left and right have different animations
+            custom={direction}
+            variants={{
+              enter: (dir: number) => ({
+                x: dir === 1 ? 100 : -100, // enter from the right if next, vice versa
+                opacity: 0,
+              }),
+              center: {
+                x: 0,
+                opacity: 1,
+              },
+              exit: (dir: number) => ({
+                x: dir === 1 ? -100 : 100, // move to the left if next, vice versa
+                opacity: 0,
+              })
+            }}
+
             // drag/swipe motion
             drag="x"
             dragConstraints={{ left: 0, right: 0 }}
-            dragElastic={0.2}
+            dragElastic={0.5}
             onDragEnd={(e, { offset, velocity }) => {
               const swipe = Math.abs(offset.x) * velocity.x;
 
@@ -52,10 +76,10 @@ export default function ProjectCarousel({ projects, itemsPerPage = 3, autoplayIn
               if (swipe > 1000) handlePrev();    // swiped right
             }}
 
-            initial={{ x: 100, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: -100, opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.25 }}
             className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
           >
             {visibleProjects.map((project, idx) => (
