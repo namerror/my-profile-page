@@ -41,6 +41,17 @@ export default function ProjectCarousel({ projects, itemsPerPage = 3, autoplayIn
         <AnimatePresence mode="wait">
           <motion.div
             key={page}
+            // drag/swipe motion
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.2}
+            onDragEnd={(e, { offset, velocity }) => {
+              const swipe = Math.abs(offset.x) * velocity.x;
+
+              if (swipe < -1000) handleNext();   // swiped left
+              if (swipe > 1000) handlePrev();    // swiped right
+            }}
+
             initial={{ x: 100, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -100, opacity: 0 }}
