@@ -129,7 +129,7 @@ export default function ProjectCarousel({ projects, itemsPerPage = 3, autoplayIn
                     initial={{ width: 0 }}
                     animate={{ width: "100%" }}
                     transition={{ duration: autoplayInterval / 1000, ease: "linear" }}
-                    className="h-full bg-indigo-600"
+                    className="h-full bg-gray-950"
                   />
                 </div>
               )}

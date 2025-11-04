@@ -67,21 +67,21 @@ export default function HomePage() {
     <main className="p-8 min-h-screen">
       {/* Placeholder for Profile */}
       <section className="mb-12 text-center">
-        <h1 className="text-3xl font-bold mb-2">Welcome👋</h1>
+        <h1 className="text-3xl font-bold mb-2">Leon Long</h1>
         <p>Here's an overview of Leon's profile</p>
       </section>
 
       {/* Project Snapshot Section */}
       <section className="mb-16">
-        <h2 className="text-2xl font-semibold mb-6">Projects Snapshot</h2>
+        <h2 className="text-2xl font-semibold mb-6">Projects</h2>
 
         <div className="mb-10">
-          <h3 className="text-lg font-semibold mb-3 text-green-700">Ongoing</h3>
+          <h3 className="text-lg font-semibold mb-3">Ongoing</h3>
           <ProjectCarousel projects={ongoingProjects} />
         </div>
 
         <div>
-          <h3 className="text-lg font-semibold mb-3 text-gray-700">Completed</h3>
+          <h3 className="text-lg font-semibold mb-3">Completed</h3>
           <ProjectCarousel projects={completedProjects} />
         </div>
       </section>

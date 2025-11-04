@@ -14,7 +14,7 @@ export default function ProjectCard({
   skills,
 }: ProjectCardProps) {
   const statusColor =
-    status === "Ongoing" ? "bg-green-100 text-green-700" : "bg-gray-200 text-gray-700";
+    status === "Ongoing" ? "bg-yellow-100 text-yellow-700" : "bg-green-100 text-green-700";
 
   return (
     <div className="rounded-2xl shadow hover:shadow-lg transition p-5 flex flex-col justify-between">
@@ -34,7 +34,7 @@ export default function ProjectCard({
           {skills.map((skill, index) => (
             <span
               key={index}
-              className="text-xs bg-indigo-50 text-indigo-700 px-2 py-1 rounded-full"
+              className="text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded-full"
             >
               {skill}
             </span>
