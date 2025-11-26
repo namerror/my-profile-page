@@ -1,67 +1,33 @@
 import ProjectCard from "@/app/components/ProjectCard";
 import ProjectCarousel from "./components/ProjectCarousel";
 
-export default function HomePage() {
-  // Placeholder data for now
-  const ongoingProjects = [
-    {
-      title: "Interactive Resume Builder",
-      description:
-        "A web app that allows users to generate and customize professional resumes dynamically.",
-      status: "Ongoing" as const,
-      skills: ["React", "Django", "TypeScript"],
-    },
-    {
-      title: "RWA Tracker",
-      description:
-        "Tracking and visualizing real-world asset performance across blockchain platforms.",
-      status: "Ongoing" as const,
-      skills: ["Python", "FastAPI", "DeFi"],
-    },
-    {
-      title: "AI Chat Personalities",
-      description:
-        "Customizable chatbot with multiple AI personalities built using the OpenAI API.",
-      status: "Ongoing" as const,
-      skills: ["Next.js", "OpenAI API", "UX Design"],
-    },
-    {
-      title: "Portfolio Website",
-      description: "A responsive developer portfolio built with Next.js and Tailwind.",
-      status: "Ongoing" as const,
-      skills: ["Next.js", "Tailwind", "Vercel"],
-    },
-  ];
+export type SkillFromApi = {
+  name: string;
+  parent: SkillFromApi | null;
+}
 
-  const completedProjects = [
-    {
-      title: "Stock Prediction App",
-      description:
-        "Machine learning project predicting stock prices using Prophet and Streamlit.",
-      status: "Completed" as const,
-      skills: ["Python", "Machine Learning", "Plotly"],
-    },
-    {
-      title: "FoundU Lost & Found",
-      description:
-        "React-based lost and found web app for students with real-time updates.",
-      status: "Completed" as const,
-      skills: ["React", "Firebase", "Tailwind"],
-    },
-    {
-      title: "Task Manager CLI",
-      description:
-        "A simple Java-based app to manage and track personal tasks.",
-      status: "Completed" as const,
-      skills: ["Java", "OOP"],
-    },
-    {
-      title: "German Article Trainer",
-      description: "A web app to practice 'der, die, das' with spaced repetition.",
-      status: "Completed" as const,
-      skills: ["Python", "JavaScript", "CSS", "HTML", "Webscraping"],
-    },
-  ];
+export type ProjectFromApi = {
+  id: number;
+  name: string;
+  description: string;
+  is_completed: boolean;
+  skills: SkillFromApi[];
+}
+
+async function fetchProjects(): Promise<ProjectFromApi[]> {
+  const res = await fetch("http://localhost:8000/", {next: { revalidate: 0}, cache:"no-store"});
+  if (!res.ok) {
+    console.error("Failed to fetch projects")
+    return [];
+  }
+  return (await res.json()) as ProjectFromApi[];
+}
+
+export default async function HomePage() {
+
+  const allProjects = await fetchProjects();
+  const ongoingProjects = allProjects.filter(p => !p.is_completed);
+  const completedProjects = allProjects.filter(p => p.is_completed);
 
   return (
     <main className="p-8 min-h-screen">

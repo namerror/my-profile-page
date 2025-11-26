@@ -3,17 +3,11 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ProjectCard from "./ProjectCard";
+import {ProjectFromApi, SkillFromApi} from "../page"
 
-
-interface Project {
-  title: string;
-  description: string;
-  status: "Ongoing" | "Completed";
-  skills: string[];
-}
 
 interface ProjectCarouselProps {
-  projects: Project[];
+  projects: ProjectFromApi[];
   itemsPerPage?: number;
   autoplayInterval?: number;
 }
