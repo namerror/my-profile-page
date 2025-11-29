@@ -1,0 +1,27 @@
+''' SQL Alchemy ORM models '''
+
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Table
+from sqlalchemy.orm import relationship, Mapped, mapped_column
+from .db.base import Base
+
+project_skill = Table(
+    "project_skill",
+    Base.metadata,
+    Column("project_id", Integer, ForeignKey("projects.id"), primary_key=True),
+    Column("skill_id", Integer, ForeignKey("skills.id"), primary_key=True),
+)
+
+class Skill(Base):
+    __tablename__ = "skills"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    name: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=False)
+    parent_id: Mapped[int] = mapped_column(Integer, ForeignKey("skills.id"), nullable=True)
+    parent = relationship("Skill", remote_side=[id], backref="children")
+
+class Project(Base):
+    __tablename__ = "projects"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    name: Mapped[str] = mapped_column(String, index=True, nullable=False)
+    description: Mapped[str] = mapped_column(String, nullable=True)
+    is_completed: Mapped[bool] = mapped_column(Boolean, default=False)
+    skills = relationship("Skill", secondary=project_skill, backref="projects")

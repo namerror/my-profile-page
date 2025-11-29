@@ -15,7 +15,7 @@ export type ProjectFromApi = {
 }
 
 async function fetchProjects(): Promise<ProjectFromApi[]> {
-  const res = await fetch("http://localhost:8000/", {next: { revalidate: 0}, cache:"no-store"});
+  const res = await fetch("http://localhost:8000/projects/", {next: { revalidate: 0}, cache:"no-store"});
   if (!res.ok) {
     console.error("Failed to fetch projects")
     return [];

@@ -1,3 +1,5 @@
+''' Pydantic types - deprecated '''
+
 from pydantic import BaseModel
 from typing import Self
 
