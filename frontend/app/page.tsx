@@ -11,7 +11,7 @@ export type ProjectFromApi = {
   name: string;
   description: string;
   is_completed: boolean;
-  skills: SkillFromApi[];
+  skills: number[]; // currently as skill ID's
 }
 
 async function fetchProjects(): Promise<ProjectFromApi[]> {

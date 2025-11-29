@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .models import *
-from app.db.session import engine
-from app.db.base import Base
-from app.api import projects
+from .db.session import engine
+from .db.base import Base
+from .api import projects
 
 app = FastAPI()
 

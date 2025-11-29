@@ -31,7 +31,7 @@ export default function ProjectCard({
               key={index}
               className="text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded-full"
             >
-              {skill.name}
+              {/*skill.name*/}
             </span>
           ))}
         </div>
