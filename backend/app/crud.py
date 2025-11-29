@@ -25,6 +25,20 @@ def create_skill_if_missing(db: Session, name: str, parent_id: int | None = None
     db.refresh(s)
     return s
 
+def update_skill(db: Session, skill: models_db.Skill, name: str, parent_id: int | None = None):
+    skill.name = name
+    if (parent_id is not None):
+        skill.parent_id = parent_id
+    db.add(skill)
+    db.commit()
+    db.refresh(skill)
+    return skill
+
+def delete_skill(db: Session, skill: models_db.Skill):
+    db.delete(skill)
+    db.commit()
+    return
+
 def create_project(db: Session, project_in: schemas.ProjectCreate):
     project = models_db.Project(name=project_in.name, description=project_in.description, is_completed=project_in.is_completed)
     if project_in.skill_ids:
