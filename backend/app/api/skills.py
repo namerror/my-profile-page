@@ -18,6 +18,13 @@ def read_skill(skill_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Skill not found")
     return s
 
+@router.get("/by-name/{skill_name}", response_model=schemas.SkillRead)
+def read_skill_by_name(skill_name: str, db: Session = Depends(get_db)):
+    s = crud.get_skill_by_name(db, skill_name)
+    if not s:
+        raise HTTPException(status_code=404, detail="Skill not found")
+    return s
+
 @router.post("/", response_model=schemas.SkillRead)
 def create_skill(skill_in: schemas.SkillCreate, db: Session = Depends(get_db)):
     return crud.create_skill_if_missing(db, name=skill_in.name, parent_id=skill_in.parent_id)
