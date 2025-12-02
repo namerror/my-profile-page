@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from .models import *
 from .db.session import engine
 from .db.base import Base
-from .api import projects
+from .api import projects, skills, auth
 
 app = FastAPI()
 
@@ -20,6 +20,8 @@ app.add_middleware(
 Base.metadata.create_all(bind=engine)
 
 app.include_router(projects.router)
+app.include_router(skills.router)
+app.include_router(auth.router)
 
 ''' Hardcoded Data - Used for Testing Only '''
 # hardcoded skills

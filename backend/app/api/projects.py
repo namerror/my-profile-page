@@ -6,6 +6,7 @@ from typing import List
 
 from ..db.session import get_db
 from .. import crud, schemas, models_db
+from .auth import get_current_admin
 
 router = APIRouter(prefix="/projects", tags=["projects"])
 
@@ -21,18 +22,18 @@ def read_project(project_id: int, db: Session = Depends(get_db)):
     return p
 
 @router.post("/", response_model=schemas.ProjectRead)
-def create_project(project_in: schemas.ProjectCreate, db: Session = Depends(get_db)):
+def create_project(project_in: schemas.ProjectCreate, db: Session = Depends(get_db), admin: str = Depends(get_current_admin)):
     return crud.create_project(db, project_in)
 
 @router.put("/{project_id}", response_model=schemas.ProjectRead)
-def update_project(project_id: int, project_in: schemas.ProjectCreate, db: Session = Depends(get_db)):
+def update_project(project_id: int, project_in: schemas.ProjectCreate, db: Session = Depends(get_db), admin: str = Depends(get_current_admin)):
     p = crud.get_project(db, project_id)
     if not p:
         raise HTTPException(status_code=404, detail="Project not found")
     return crud.update_project(db, p, project_in)
 
 @router.delete("/{project_id}", status_code=204)
-def delete_project(project_id: int, db: Session = Depends(get_db)):
+def delete_project(project_id: int, db: Session = Depends(get_db), admin: str = Depends(get_current_admin)):
     p = crud.get_project(db, project_id)
     if not p:
         raise HTTPException(status_code=404, detail="Project not found")
