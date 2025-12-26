@@ -1,10 +1,13 @@
 from datetime import datetime, timedelta, timezone
 import os
+from dotenv import load_dotenv
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import JWTError, jwt
 from pydantic import BaseModel
+
+load_dotenv()
 
 SECRET_KEY = os.getenv("SECRET_KEY", "replace_this_with_a_random_secret")
 ALGORITHM = "HS256"
