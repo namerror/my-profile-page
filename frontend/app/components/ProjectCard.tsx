@@ -1,13 +1,19 @@
 import React from "react";
 import { ProjectFromApi, SkillFromApi } from "../page";
 
+interface ProjectCardProps extends ProjectFromApi {
+  skillsMap?: Map<number, SkillFromApi>;
+}
+
 export default function ProjectCard({
   id,
   name,
   description,
   is_completed,
   skills,
-}: ProjectFromApi) {
+  skillsMap,
+}: ProjectCardProps) {
+  // Map skill IDs to skill objects using the provided skillsMap
   const statusColor =
     is_completed ? "bg-yellow-100 text-yellow-700" : "bg-green-100 text-green-700";
 
@@ -31,7 +37,7 @@ export default function ProjectCard({
               key={index}
               className="text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded-full"
             >
-              {/*skill.name*/}
+              {skillsMap?.get(skill)?.name || "Unknown Skill"}
             </span>
           ))}
         </div>

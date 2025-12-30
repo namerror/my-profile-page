@@ -2,6 +2,7 @@ import ProjectCard from "@/app/components/ProjectCard";
 import ProjectCarousel from "./components/ProjectCarousel";
 
 export type SkillFromApi = {
+  id: number;
   name: string;
   parent: SkillFromApi | null;
 }
@@ -23,11 +24,25 @@ async function fetchProjects(): Promise<ProjectFromApi[]> {
   return (await res.json()) as ProjectFromApi[];
 }
 
+// returns a map of skill ID to SkillFromApi
+async function fetchSkills(): Promise<Map<number, SkillFromApi>> {
+  const res = await fetch("http://localhost:8000/skills/", {next: { revalidate: 0}, cache:"no-store"});
+  if (!res.ok) {
+    console.error("Failed to fetch skills")
+    return new Map();
+  }
+  const skillsArray = (await res.json()) as SkillFromApi[];
+  const skillsMap = new Map<number, SkillFromApi>();
+  skillsArray.forEach(skill => skillsMap.set(skill.id, skill));
+  return skillsMap;
+}
+
 export default async function HomePage() {
 
   const allProjects = await fetchProjects();
   const ongoingProjects = allProjects.filter(p => !p.is_completed);
   const completedProjects = allProjects.filter(p => p.is_completed);
+  const skillsMap = await fetchSkills();
 
   return (
     <main className="p-8 min-h-screen">
@@ -43,12 +58,12 @@ export default async function HomePage() {
 
         <div className="mb-10">
           <h3 className="text-lg font-semibold mb-3">Ongoing</h3>
-          <ProjectCarousel projects={ongoingProjects} />
+          <ProjectCarousel projects={ongoingProjects} skillsMap={skillsMap} />
         </div>
 
         <div>
           <h3 className="text-lg font-semibold mb-3">Completed</h3>
-          <ProjectCarousel projects={completedProjects} />
+          <ProjectCarousel projects={completedProjects} skillsMap={skillsMap} />
         </div>
       </section>
 

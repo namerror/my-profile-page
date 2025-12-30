@@ -9,6 +9,9 @@ def get_project(db: Session, project_id: int):
 def list_projects(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models_db.Project).offset(skip).limit(limit).all()
 
+def list_skills(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models_db.Skill).offset(skip).limit(limit).all()
+
 def get_skill_by_name(db: Session, name: str):
     return db.query(models_db.Skill).filter(models_db.Skill.name == name).first()
 

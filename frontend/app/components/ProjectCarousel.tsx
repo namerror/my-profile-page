@@ -10,9 +10,10 @@ interface ProjectCarouselProps {
   projects: ProjectFromApi[];
   itemsPerPage?: number;
   autoplayInterval?: number;
+  skillsMap?: Map<number, SkillFromApi>;
 }
 
-export default function ProjectCarousel({ projects, itemsPerPage = 3, autoplayInterval = 5000 }: ProjectCarouselProps) {
+export default function ProjectCarousel({ projects, itemsPerPage = 3, autoplayInterval = 5000, skillsMap }: ProjectCarouselProps) {
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState(1); // 1 for next page (to the right)
 
