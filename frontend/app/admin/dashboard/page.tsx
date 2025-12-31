@@ -2,15 +2,18 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import ProjectManager from './ProjectManager';
+// import SkillManager from './SkillManager';
 
 export default function AdminDashboard() {
   const router = useRouter();
   const [ok, setOk] = useState(false);
+  const [activeTab, setActiveTab] = useState<'projects' | 'skills'>('projects');
 
   useEffect(() => {
     const token = localStorage.getItem('admin_token');
     if (!token) {
-      router.replace('/admin');
+      router.replace('/admin/login');
       return;
     }
     setOk(true);
@@ -19,16 +22,47 @@ export default function AdminDashboard() {
   if (!ok) return <div className="p-8">Checking authentication...</div>;
 
   return (
-    <main className="p-8">
-      <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
-      <p className="mb-4">Use the admin UI to create/edit/delete projects and skills.</p>
-
-      <div className="text-sm text-gray-600">
-        Example: send Authorization header for write requests:
-        <pre className="mt-2 bg-gray-100 p-2 rounded text-xs">
-          Authorization: Bearer &lt;admin_token from localStorage&gt;
-        </pre>
+    <main className="p-8 max-w-6xl mx-auto">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+        <button
+          onClick={() => {
+            localStorage.removeItem('admin_token');
+            router.push('/admin/login');
+          }}
+          className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+        >
+          Logout
+        </button>
       </div>
+
+      {/* Tabs */}
+      <div className="flex gap-4 mb-6 border-b">
+        <button
+          onClick={() => setActiveTab('projects')}
+          className={`px-4 py-2 font-semibold ${
+            activeTab === 'projects'
+              ? 'border-b-2 border-blue-600 text-blue-600'
+              : 'text-gray-600 hover:text-gray-900'
+          }`}
+        >
+          Projects
+        </button>
+        <button
+          onClick={() => setActiveTab('skills')}
+          className={`px-4 py-2 font-semibold ${
+            activeTab === 'skills'
+              ? 'border-b-2 border-blue-600 text-blue-600'
+              : 'text-gray-600 hover:text-gray-900'
+          }`}
+        >
+          Skills
+        </button>
+      </div>
+
+      {/* Tab Content */}
+      {activeTab === 'projects' && <ProjectManager />}
+      {/*activeTab === 'skills' && <SkillManager />*/}
     </main>
   );
 }
