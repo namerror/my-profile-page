@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ProjectFromApi } from '@/app/page';
 import { SkillFromApi } from '@/app/page';
 
@@ -13,7 +13,12 @@ export default function ProjectManager() {
     const [error, setError] = useState<string | null>(null);
     const [editing, setEditing] = useState<ProjectFromApi | null>(null);
     const [showForm, setShowForm] = useState(false);
-    const skillsMap = new Map<number, SkillFromApi>();
+
+    const skillsMap = useMemo(() => {
+        const map = new Map<number, SkillFromApi>();
+        skills.forEach(skill => map.set(skill.id, skill));
+        return map;
+    }, [skills]);
 
     // form states
     const [name, setName] = useState('');
@@ -46,7 +51,6 @@ export default function ProjectManager() {
             if (!res.ok) throw new Error('Failed to fetch skills');
             const skillArray = (await res.json()) as SkillFromApi[];
             setSkills(skillArray);
-            skillArray.forEach(skill => skillsMap.set(skill.id, skill));
         } catch (err: any) {
             setError(err.message);
         }
@@ -126,6 +130,7 @@ export default function ProjectManager() {
                 ? prev.filter((id) => id !== skillId)
                 : [...prev, skillId]
         );
+        console.log(selectedSkills);
     }
     
     if (loading) return <div>Loading...</div>;

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import ProjectManager from './ProjectManager';
-// import SkillManager from './SkillManager';
+import SkillManager from './SkillManager';
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -62,7 +62,7 @@ export default function AdminDashboard() {
 
       {/* Tab Content */}
       {activeTab === 'projects' && <ProjectManager />}
-      {/*activeTab === 'skills' && <SkillManager />*/}
+      {activeTab === 'skills' && <SkillManager />}
     </main>
   );
 }

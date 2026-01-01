@@ -9,8 +9,8 @@ from .auth import get_current_admin
 router = APIRouter(prefix="/skills", tags=["skills"])
 
 @router.get("/", response_model=List[schemas.SkillRead])
-def read_skills(db: Session = Depends(get_db)):
-    return db.query(models_db.Skill).all()
+def read_skills(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    return  crud.list_skills(db, skip=skip, limit=limit)
 
 @router.get("/{skill_id}", response_model=schemas.SkillRead)
 def read_skill(skill_id: int, db: Session = Depends(get_db)):

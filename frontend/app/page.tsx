@@ -4,7 +4,7 @@ import ProjectCarousel from "./components/ProjectCarousel";
 export type SkillFromApi = {
   id: number;
   name: string;
-  parent: SkillFromApi | null;
+  parent_id: number | null;
 }
 
 export type ProjectFromApi = {
