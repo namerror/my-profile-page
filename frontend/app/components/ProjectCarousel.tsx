@@ -3,17 +3,16 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ProjectCard from "./ProjectCard";
-import {ProjectFromApi, SkillFromApi} from "../page"
+import {ProjectRead, SkillRead} from "../page"
 
 
 interface ProjectCarouselProps {
-  projects: ProjectFromApi[];
+  projects: ProjectRead[];
   itemsPerPage?: number;
   autoplayInterval?: number;
-  skillsMap?: Map<number, SkillFromApi>;
 }
 
-export default function ProjectCarousel({ projects, itemsPerPage = 3, autoplayInterval = 5000, skillsMap }: ProjectCarouselProps) {
+export default function ProjectCarousel({ projects, itemsPerPage = 3, autoplayInterval = 5000 }: ProjectCarouselProps) {
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState(1); // 1 for next page (to the right)
 

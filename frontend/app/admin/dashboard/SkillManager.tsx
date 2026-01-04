@@ -1,19 +1,19 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { SkillFromApi } from '@/app/page';
+import { SkillRead } from '@/app/page';
 
 const API_URL = 'http://localhost:8000';
 
 export default function SkillManager() {
-    const [skills, setSkills] = useState<SkillFromApi[]>([]);
+    const [skills, setSkills] = useState<SkillRead[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [editing, setEditing] = useState<SkillFromApi | null>(null);
+    const [editing, setEditing] = useState<SkillRead | null>(null);
     const [showForm, setShowForm] = useState(false);
 
     const skillsMap = useMemo(() => {
-        const map = new Map<number, SkillFromApi>();
+        const map = new Map<number, SkillRead>();
         skills.forEach(skill => map.set(skill.id, skill));
         return map;
     }, [skills]);
@@ -33,7 +33,7 @@ export default function SkillManager() {
         try {
             const res = await fetch(`${API_URL}/skills/`, { headers: authHeaders });
             if (!res.ok) throw new Error('Failed to fetch skills');
-            const skillArray = (await res.json()) as SkillFromApi[];
+            const skillArray = (await res.json()) as SkillRead[];
             setSkills(skillArray);
         } catch (err: any) {
             setError(err.message);
@@ -51,7 +51,7 @@ export default function SkillManager() {
         setShowForm(false);
     }
 
-    function handleEdit(skill: SkillFromApi) {
+    function handleEdit(skill: SkillRead) {
         setEditing(skill);
         setName(skill.name);
         setParent(skill.parent_id ?? null);

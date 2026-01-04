@@ -1,40 +1,50 @@
 import ProjectCard from "@/app/components/ProjectCard";
 import ProjectCarousel from "./components/ProjectCarousel";
 
-export type SkillFromApi = {
-  id: number;
+interface SkillBase {
   name: string;
   parent_id: number | null;
 }
 
-export type ProjectFromApi = {
-  id: number;
+interface ProjectBase {
   name: string;
   description: string;
   is_completed: boolean;
-  skills: number[]; // currently as skill ID's
 }
 
-async function fetchProjects(): Promise<ProjectFromApi[]> {
+export type SkillRead = SkillBase & {
+  id: number;
+}
+
+export type SkillCreate = SkillBase
+
+export type ProjectRead = ProjectBase & {
+  id: number;
+  skills: SkillRead[];
+}
+
+export type ProjectCreate = ProjectBase & {
+  skills: number[]; // array of skill IDs
+}
+
+async function fetchProjects(): Promise<ProjectRead[]> {
   const res = await fetch("http://localhost:8000/projects/", {next: { revalidate: 0}, cache:"no-store"});
   if (!res.ok) {
     console.error("Failed to fetch projects")
     return [];
   }
-  return (await res.json()) as ProjectFromApi[];
+  return (await res.json()) as ProjectRead[];
 }
 
-// returns a map of skill ID to SkillFromApi
-async function fetchSkills(): Promise<Map<number, SkillFromApi>> {
+// returns an array of skills
+async function fetchSkills(): Promise<SkillRead[]> {
   const res = await fetch("http://localhost:8000/skills/", {next: { revalidate: 0}, cache:"no-store"});
   if (!res.ok) {
     console.error("Failed to fetch skills")
-    return new Map();
+    return [];
   }
-  const skillsArray = (await res.json()) as SkillFromApi[];
-  const skillsMap = new Map<number, SkillFromApi>();
-  skillsArray.forEach(skill => skillsMap.set(skill.id, skill));
-  return skillsMap;
+  const skillsArray = (await res.json()) as SkillRead[];
+  return skillsArray;
 }
 
 export default async function HomePage() {
@@ -42,7 +52,7 @@ export default async function HomePage() {
   const allProjects = await fetchProjects();
   const ongoingProjects = allProjects.filter(p => !p.is_completed);
   const completedProjects = allProjects.filter(p => p.is_completed);
-  const skillsMap = await fetchSkills();
+  const skills = await fetchSkills();
 
   return (
     <main className="p-8 min-h-screen">
@@ -58,12 +68,12 @@ export default async function HomePage() {
 
         <div className="mb-10">
           <h3 className="text-lg font-semibold mb-3">Ongoing</h3>
-          <ProjectCarousel projects={ongoingProjects} skillsMap={skillsMap} />
+          <ProjectCarousel projects={ongoingProjects} />
         </div>
 
         <div>
           <h3 className="text-lg font-semibold mb-3">Completed</h3>
-          <ProjectCarousel projects={completedProjects} skillsMap={skillsMap} />
+          <ProjectCarousel projects={completedProjects}/>
         </div>
       </section>
 

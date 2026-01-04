@@ -1,24 +1,19 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { ProjectFromApi } from '@/app/page';
-import { SkillFromApi } from '@/app/page';
+import { ProjectRead, ProjectCreate } from '@/app/page';
+import { SkillRead, SkillCreate } from '@/app/page';
+import { select } from 'framer-motion/client';
 
 const API_URL = 'http://localhost:8000';
 
 export default function ProjectManager() {
-    const [projects, setProjects] = useState<ProjectFromApi[]>([]);
-    const [skills, setSkills] = useState<SkillFromApi[]>([]);
+    const [projects, setProjects] = useState<ProjectRead[]>([]);
+    const [skills, setSkills] = useState<SkillRead[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [editing, setEditing] = useState<ProjectFromApi | null>(null);
+    const [editing, setEditing] = useState<ProjectRead | null>(null);
     const [showForm, setShowForm] = useState(false);
-
-    const skillsMap = useMemo(() => {
-        const map = new Map<number, SkillFromApi>();
-        skills.forEach(skill => map.set(skill.id, skill));
-        return map;
-    }, [skills]);
 
     // form states
     const [name, setName] = useState('');
@@ -49,7 +44,7 @@ export default function ProjectManager() {
         try {
             const res = await fetch(`${API_URL}/skills/`, { headers: authHeaders });
             if (!res.ok) throw new Error('Failed to fetch skills');
-            const skillArray = (await res.json()) as SkillFromApi[];
+            const skillArray = (await res.json()) as SkillRead[];
             setSkills(skillArray);
         } catch (err: any) {
             setError(err.message);
@@ -57,6 +52,11 @@ export default function ProjectManager() {
     }
 
     useEffect(() => {
+        if (!token) {
+            setError('No authentication token found');
+            setLoading(false);
+            return;
+        }
         Promise.all([fetchProjects(), fetchSkills()]).finally(() => setLoading(false));
     }, []);
 
@@ -69,12 +69,12 @@ export default function ProjectManager() {
         setShowForm(false);
     }
 
-    function handleEdit(project: ProjectFromApi) {
+    function handleEdit(project: ProjectRead) {
         setEditing(project);
         setName(project.name);
         setDescription(project.description);
         setIsCompleted(project.is_completed);
-        setSelectedSkills(project.skills);
+        setSelectedSkills(project.skills.map(skill => skill.id));
         setShowForm(true);
     }
 
@@ -86,7 +86,7 @@ export default function ProjectManager() {
             name: name,
             description: description,
             is_completed: isCompleted,
-            skills: selectedSkills,
+            skill_ids: selectedSkills, // send array of skill IDs
         };
 
         try {
@@ -124,13 +124,12 @@ export default function ProjectManager() {
         }
     }
 
-    function toggleSkill(skillId: number) {
+    function toggleSkill(skill: SkillRead) {
         setSelectedSkills((prev) =>
-            prev.includes(skillId)
-                ? prev.filter((id) => id !== skillId)
-                : [...prev, skillId]
+            prev.includes(skill.id)
+                ? prev.filter((id) => id !== skill.id)
+                : [...prev, skill.id]
         );
-        console.log(selectedSkills);
     }
     
     if (loading) return <div>Loading...</div>;
@@ -195,7 +194,7 @@ export default function ProjectManager() {
                     <input
                         type="checkbox"
                         checked={selectedSkills.includes(skill.id)}
-                        onChange={() => toggleSkill(skill.id)}
+                        onChange={() => toggleSkill(skill)}
                     />
                     {skill.name} 
                     </label>
@@ -260,8 +259,8 @@ export default function ProjectManager() {
                     {project.skills.length > 0 && (
                     <div className="flex gap-1">
                         {project.skills.map((skill) => (
-                        <span key={skill} className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">
-                            {skillsMap.get(skill)?.name || 'Unknown'}
+                        <span key={skill.id} className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">
+                            {skill.name}
                         </span>
                         ))}
                     </div>
