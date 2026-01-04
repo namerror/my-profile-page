@@ -1,6 +1,7 @@
 .venv/
 
 backend/.env
+backend/dev.db
 
 # ignore python cache files
 __pycache__/
