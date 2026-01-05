@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { ProjectRead } from '@/app/page';
 import { SkillRead } from '@/app/page';
 
-const API_URL = 'http://localhost:8000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export default function ProjectManager() {
     const [projects, setProjects] = useState<ProjectRead[]>([]);

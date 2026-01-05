@@ -27,8 +27,10 @@ export type ProjectCreate = ProjectBase & {
   skills: number[]; // array of skill IDs
 }
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
 async function fetchProjects(): Promise<ProjectRead[]> {
-  const res = await fetch("http://localhost:8000/projects/", {next: { revalidate: 0}, cache:"no-store"});
+  const res = await fetch(`${API_URL}/projects/`, {next: { revalidate: 0}, cache:"no-store"});
   if (!res.ok) {
     console.error("Failed to fetch projects")
     return [];
@@ -38,7 +40,7 @@ async function fetchProjects(): Promise<ProjectRead[]> {
 
 // returns an array of skills
 async function fetchSkills(): Promise<SkillRead[]> {
-  const res = await fetch("http://localhost:8000/skills/", {next: { revalidate: 0}, cache:"no-store"});
+  const res = await fetch(`${API_URL}/skills/`, {next: { revalidate: 0}, cache:"no-store"});
   if (!res.ok) {
     console.error("Failed to fetch skills")
     return [];

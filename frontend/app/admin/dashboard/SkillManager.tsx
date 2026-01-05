@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { SkillRead } from '@/app/page';
 
-const API_URL = 'http://localhost:8000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export default function SkillManager() {
     const [skills, setSkills] = useState<SkillRead[]>([]);
