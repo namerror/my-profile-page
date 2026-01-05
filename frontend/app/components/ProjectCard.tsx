@@ -1,8 +1,7 @@
 import React from "react";
-import { ProjectRead, SkillRead } from "../page";
+import { ProjectRead } from "../page";
 
 export default function ProjectCard({
-  id,
   name,
   description,
   is_completed,

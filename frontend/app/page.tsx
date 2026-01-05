@@ -59,7 +59,7 @@ export default async function HomePage() {
       {/* Placeholder for Profile */}
       <section className="mb-12 text-center">
         <h1 className="text-3xl font-bold mb-2">Leon Long</h1>
-        <p>Here's an overview of Leon's profile</p>
+        <p>Here&apos;s an overview of Leon&apos;s profile</p>
       </section>
 
       {/* Project Snapshot Section */}

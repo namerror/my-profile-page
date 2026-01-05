@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ProjectCard from "./ProjectCard";
-import {ProjectRead, SkillRead} from "../page"
+import { ProjectRead } from "../page"
 
 
 interface ProjectCarouselProps {
@@ -20,10 +20,11 @@ export default function ProjectCarousel({ projects, itemsPerPage = 3, autoplayIn
   const startIdx = page * itemsPerPage;
   const visibleProjects = projects.slice(startIdx, startIdx + itemsPerPage);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     setDirection(1);
     setPage((prev) => (prev + 1) % totalPages);
-  }
+  }, [totalPages]);
+  
   const handlePrev = () => {
     setDirection(0);
     setPage((prev) => (prev - 1 + totalPages) % totalPages);
@@ -33,7 +34,7 @@ export default function ProjectCarousel({ projects, itemsPerPage = 3, autoplayIn
   useEffect(() => {
     const timer = setInterval(() => handleNext(), autoplayInterval);
     return () => clearInterval(timer);
-  }, [page, autoplayInterval])
+  }, [page, autoplayInterval, handleNext])
 
   return (
     <div className="relative m-1.5">

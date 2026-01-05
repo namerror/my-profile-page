@@ -33,8 +33,12 @@ export default function LoginForm() {
 
       localStorage.setItem('admin_token', token);
       router.push('/admin/dashboard');
-    } catch (err: any) {
-      setError(err.message || 'Login failed');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Login failed');
+      }
     } finally {
       setLoading(false);
     }
