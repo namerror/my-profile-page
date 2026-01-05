@@ -1,11 +1,10 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
-import { ProjectRead, ProjectCreate } from '@/app/page';
-import { SkillRead, SkillCreate } from '@/app/page';
-import { select } from 'framer-motion/client';
+import { useEffect, useState } from 'react';
+import { ProjectRead } from '@/app/page';
+import { SkillRead } from '@/app/page';
 
-const API_URL = 'http://localhost:8000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export default function ProjectManager() {
     const [projects, setProjects] = useState<ProjectRead[]>([]);
@@ -34,8 +33,8 @@ export default function ProjectManager() {
             if (!res.ok) throw new Error('Failed to fetch projects');
             const data = await res.json();
             setProjects(data);
-        } catch (err: any) {
-            setError(err.message);
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : 'Failed to fetch projects');
         }
     }
 
@@ -46,8 +45,8 @@ export default function ProjectManager() {
             if (!res.ok) throw new Error('Failed to fetch skills');
             const skillArray = (await res.json()) as SkillRead[];
             setSkills(skillArray);
-        } catch (err: any) {
-            setError(err.message);
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : 'Failed to fetch skills');
         }
     }
 
@@ -58,7 +57,7 @@ export default function ProjectManager() {
             return;
         }
         Promise.all([fetchProjects(), fetchSkills()]).finally(() => setLoading(false));
-    }, []);
+    }, [token]);
 
     function resetForm() {
         setName('');
@@ -103,8 +102,8 @@ export default function ProjectManager() {
 
             await fetchProjects();
             resetForm();
-        } catch (err: any) {
-            setError(err.message);
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : 'Failed to save project');
         }
     }
 
@@ -119,8 +118,8 @@ export default function ProjectManager() {
             });
             if (!res.ok) throw new Error('Failed to delete project');
             await fetchProjects();
-        } catch (err: any) {
-            setError(err.message);
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : 'Failed to delete project');
         }
     }
 

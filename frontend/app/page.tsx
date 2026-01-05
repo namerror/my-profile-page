@@ -27,8 +27,10 @@ export type ProjectCreate = ProjectBase & {
   skills: number[]; // array of skill IDs
 }
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
 async function fetchProjects(): Promise<ProjectRead[]> {
-  const res = await fetch("http://localhost:8000/projects/", {next: { revalidate: 0}, cache:"no-store"});
+  const res = await fetch(`${API_URL}/projects/`, {next: { revalidate: 0}, cache:"no-store"});
   if (!res.ok) {
     console.error("Failed to fetch projects")
     return [];
@@ -38,7 +40,7 @@ async function fetchProjects(): Promise<ProjectRead[]> {
 
 // returns an array of skills
 async function fetchSkills(): Promise<SkillRead[]> {
-  const res = await fetch("http://localhost:8000/skills/", {next: { revalidate: 0}, cache:"no-store"});
+  const res = await fetch(`${API_URL}/skills/`, {next: { revalidate: 0}, cache:"no-store"});
   if (!res.ok) {
     console.error("Failed to fetch skills")
     return [];
@@ -59,7 +61,7 @@ export default async function HomePage() {
       {/* Placeholder for Profile */}
       <section className="mb-12 text-center">
         <h1 className="text-3xl font-bold mb-2">Leon Long</h1>
-        <p>Here's an overview of Leon's profile</p>
+        <p>Here&apos;s an overview of Leon&apos;s profile</p>
       </section>
 
       {/* Project Snapshot Section */}

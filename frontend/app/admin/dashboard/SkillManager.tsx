@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { SkillRead } from '@/app/page';
 
-const API_URL = 'http://localhost:8000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export default function SkillManager() {
     const [skills, setSkills] = useState<SkillRead[]>([]);
@@ -35,8 +35,8 @@ export default function SkillManager() {
             if (!res.ok) throw new Error('Failed to fetch skills');
             const skillArray = (await res.json()) as SkillRead[];
             setSkills(skillArray);
-        } catch (err: any) {
-            setError(err.message);
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : 'Failed to fetch skills');
         }
     }
 
@@ -78,8 +78,8 @@ export default function SkillManager() {
             if (!res.ok) throw new Error('Failed to save skill');
             await fetchSkills();
             resetForm();
-        } catch (err: any) {
-            setError(err.message);
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : 'Failed to save skill');
         }
     }
 
@@ -94,8 +94,8 @@ export default function SkillManager() {
 
             if (!res.ok) throw new Error('Failed to delete skill');
             await fetchSkills();
-        } catch (err: any) {
-            setError(err.message);
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : 'Failed to delete skill');
         }
     }
 
