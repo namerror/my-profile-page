@@ -24,6 +24,10 @@ app.include_router(projects.router)
 app.include_router(skills.router)
 app.include_router(auth.router)
 
+@app.get("/")
+def read_root():
+    return {"message": "Backend is running!"}
+
 ''' Hardcoded Data - Used for Testing Only '''
 # hardcoded skills
 _skill_frontend = Skill(name="Frontend")
