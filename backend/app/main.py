@@ -4,14 +4,18 @@ from .models import *
 from .db.session import engine
 from .db.base import Base
 from .api import projects, skills, auth
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+ALLOWED_ORIGINS = os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")
 
 app = FastAPI()
 
 # Allow frontend dev server
 app.add_middleware(
     CORSMiddleware,
-    allow_origins = ["http://localhost:3000",
-                     "http://127.0.0.1:3000"],
+    allow_origins = ALLOWED_ORIGINS,
     allow_credentials = True,
     allow_methods = ["*"],
     allow_headers = ["*"],
