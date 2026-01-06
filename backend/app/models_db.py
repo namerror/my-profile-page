@@ -1,6 +1,6 @@
 ''' SQL Alchemy ORM models '''
 
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Table
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Table, Text
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from .db.base import Base
 
@@ -25,3 +25,4 @@ class Project(Base):
     description: Mapped[str] = mapped_column(String, nullable=True)
     is_completed: Mapped[bool] = mapped_column(Boolean, default=False)
     skills = relationship("Skill", secondary=project_skill, backref="projects")
+    content: Mapped[str] = mapped_column(Text, nullable=True) # Markdown body

@@ -20,6 +20,7 @@ class ProjectBase(BaseModel):
     name: str
     description: str
     is_completed: bool = False
+    content: str | None = None
 
 class ProjectCreate(ProjectBase):
     skill_ids: List[int] = []

@@ -43,7 +43,12 @@ def delete_skill(db: Session, skill: models_db.Skill):
     return
 
 def create_project(db: Session, project_in: schemas.ProjectCreate):
-    project = models_db.Project(name=project_in.name, description=project_in.description, is_completed=project_in.is_completed)
+    project = models_db.Project(
+        name=project_in.name, 
+        description=project_in.description, 
+        is_completed=project_in.is_completed,
+        content=project_in.content
+        )
     if project_in.skill_ids:
         skills = db.query(models_db.Skill).filter(models_db.Skill.id.in_(project_in.skill_ids)).all()
         project.skills = skills
@@ -56,6 +61,8 @@ def update_project(db: Session, project: models_db.Project, project_in: schemas.
     project.name = project_in.name
     project.description = project_in.description
     project.is_completed = project_in.is_completed
+    if project_in.content is not None:
+        project.content = project_in.content
     if project_in.skill_ids is not None:
         project.skills = db.query(models_db.Skill).filter(models_db.Skill.id.in_(project_in.skill_ids)).all()
     db.add(project)
