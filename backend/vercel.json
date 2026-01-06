@@ -1,5 +1,5 @@
 {
-  "buildCommand": "pip install -r requirements.txt",
+  "buildCommand": "pip install -r requirements.txt && python -m alembic -c alembic.ini upgrade head",
   "outputDirectory": "backend",
   "env": {
     "PYTHONPATH": "backend"
