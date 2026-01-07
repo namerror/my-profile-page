@@ -1,4 +1,3 @@
-import ProjectCard from "@/app/components/ProjectCard";
 import ProjectCarousel from "./components/ProjectCarousel";
 
 interface SkillBase {
@@ -10,6 +9,7 @@ interface ProjectBase {
   name: string;
   description: string;
   is_completed: boolean;
+  content: string | null;
 }
 
 export type SkillRead = SkillBase & {
@@ -81,6 +81,7 @@ export default async function HomePage() {
 
       {/* Placeholders for other sections */}
       <section className="text-gray-500 italic">
+        <h2 className="text-2xl font-semibold mb-6">More features coming soon</h2>
         <p>[Skills Progress Section Placeholder]</p>
         <p>[Readings Section Placeholder]</p>
         <p>[Dashboard Stats Placeholder]</p>
