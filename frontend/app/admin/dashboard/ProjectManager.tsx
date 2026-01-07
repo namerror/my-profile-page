@@ -19,6 +19,7 @@ export default function ProjectManager() {
     const [description, setDescription] = useState('');
     const [isCompleted, setIsCompleted] = useState(false);
     const [selectedSkills, setSelectedSkills] = useState<number[]>([]);
+    const [content, setContent] = useState<string | null>(null);
 
     const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
 
@@ -64,6 +65,7 @@ export default function ProjectManager() {
         setDescription('');
         setIsCompleted(false);
         setSelectedSkills([]);
+        setContent(null);
         setEditing(null);
         setShowForm(false);
     }
@@ -73,6 +75,7 @@ export default function ProjectManager() {
         setName(project.name);
         setDescription(project.description);
         setIsCompleted(project.is_completed);
+        setContent(project.content);
         setSelectedSkills(project.skills.map(skill => skill.id));
         setShowForm(true);
     }
@@ -85,6 +88,7 @@ export default function ProjectManager() {
             name: name,
             description: description,
             is_completed: isCompleted,
+            content: content,
             skill_ids: selectedSkills, // send array of skill IDs
         };
 
@@ -183,6 +187,16 @@ export default function ProjectManager() {
                 />
                 <span className="text-sm font-medium">Completed</span>
                 </label>
+            </div>
+
+            <div className="mb-3">
+                <label className="block text-sm font-medium mb-1">Content</label>
+                <textarea
+                value={content || ''}
+                onChange={(e) => setContent(e.target.value)}
+                className="w-full border p-2 rounded"
+                rows={4}
+                />
             </div>
 
             <div className="mb-3">
