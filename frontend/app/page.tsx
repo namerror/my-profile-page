@@ -1,4 +1,3 @@
-import ProjectCard from "@/app/components/ProjectCard";
 import ProjectCarousel from "./components/ProjectCarousel";
 
 interface SkillBase {
