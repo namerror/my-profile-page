@@ -74,3 +74,42 @@ def delete_project(db: Session, project: models_db.Project):
     db.delete(project)
     db.commit()
     return
+
+def get_learning(db: Session, learning_id: int):
+    return db.query(models_db.Learning).filter(models_db.Learning.id == learning_id).first()
+
+def list_learnings(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models_db.Learning).offset(skip).limit(limit).all()
+
+def create_learning(db: Session, learning_in: schemas.LearningCreate):
+    learning = models_db.Learning(
+        title=learning_in.title, 
+        url=learning_in.url, 
+        description=learning_in.description, 
+        is_completed=learning_in.is_completed
+        )
+    if learning_in.skill_ids:
+        skills = db.query(models_db.Skill).filter(models_db.Skill.id.in_(learning_in.skill_ids)).all()
+        learning.skills = skills
+    db.add(learning)
+    db.commit()
+    db.refresh(learning)
+    return learning
+
+def update_learning(db: Session, learning: models_db.Learning, learning_in: schemas.LearningCreate):
+    learning.title = learning_in.title
+    if learning_in.url is not None:
+        learning.url = learning_in.url
+    learning.description = learning_in.description
+    learning.is_completed = learning_in.is_completed
+    if learning_in.skill_ids is not None:
+        learning.skills = db.query(models_db.Skill).filter(models_db.Skill.id.in_(learning_in.skill_ids)).all()
+    db.add(learning)
+    db.commit()
+    db.refresh(learning)
+    return learning
+
+def delete_learning(db: Session, learning: models_db.Learning):
+    db.delete(learning)
+    db.commit()
+    return

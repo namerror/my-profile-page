@@ -11,6 +11,13 @@ project_skill = Table(
     Column("skill_id", Integer, ForeignKey("skills.id"), primary_key=True),
 )
 
+learning_skill = Table(
+    "learning_skill",
+    Base.metadata,
+    Column("learning_id", Integer, ForeignKey("learnings.id"), primary_key=True),
+    Column("skill_id", Integer, ForeignKey("skills.id"), primary_key=True),
+)
+
 class Skill(Base):
     __tablename__ = "skills"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
@@ -26,3 +33,13 @@ class Project(Base):
     is_completed: Mapped[bool] = mapped_column(Boolean, default=False)
     skills = relationship("Skill", secondary=project_skill, backref="projects")
     content: Mapped[str] = mapped_column(Text, nullable=True) # Markdown body
+
+# A learning resource such as book, link, video, etc.
+class Learning(Base):
+    __tablename__ = "learnings"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    title: Mapped[str] = mapped_column(String, index=True, nullable=False)
+    url: Mapped[str] = mapped_column(String, nullable=True)
+    description: Mapped[str] = mapped_column(Text, nullable=True)
+    skills = relationship("Skill", secondary=learning_skill, backref="learnings")
+    is_completed: Mapped[bool] = mapped_column(Boolean, default=False)

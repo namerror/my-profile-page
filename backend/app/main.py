@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from .models import *
 from .db.session import engine
 from .db.base import Base
-from .api import projects, skills, auth
+from .api import projects, skills, auth, learnings
 import os
 from dotenv import load_dotenv
 
@@ -26,6 +26,7 @@ Base.metadata.create_all(bind=engine)
 
 app.include_router(projects.router)
 app.include_router(skills.router)
+app.include_router(learnings.router)
 app.include_router(auth.router)
 
 @app.get("/")
