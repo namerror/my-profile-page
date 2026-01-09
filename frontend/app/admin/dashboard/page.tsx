@@ -4,11 +4,12 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import ProjectManager from './ProjectManager';
 import SkillManager from './SkillManager';
+import LearningManager from './LearningManager';
 
 export default function AdminDashboard() {
   const router = useRouter();
   const [ok, setOk] = useState(false);
-  const [activeTab, setActiveTab] = useState<'projects' | 'skills'>('projects');
+  const [activeTab, setActiveTab] = useState<'projects' | 'skills' | 'learnings'>('projects');
 
   useEffect(() => {
     const token = localStorage.getItem('admin_token');
@@ -58,11 +59,25 @@ export default function AdminDashboard() {
         >
           Skills
         </button>
+
+        <button
+          onClick={() => setActiveTab('learnings')}
+          className={`px-4 py-2 font-semibold ${
+            activeTab === 'learnings'
+              ? 'border-b-2 border-blue-600 text-blue-600'
+              : 'text-gray-600 hover:text-gray-900'
+          }`}
+        >
+          Learnings
+        </button>
       </div>
+
+
 
       {/* Tab Content */}
       {activeTab === 'projects' && <ProjectManager />}
       {activeTab === 'skills' && <SkillManager />}
+      {activeTab === 'learnings' && <LearningManager />}
     </main>
   );
 }

@@ -12,6 +12,13 @@ interface ProjectBase {
   content: string | null;
 }
 
+interface LearningBase {
+  title: string;
+  url: string | null;
+  description: string;
+  is_completed: boolean;
+}
+
 export type SkillRead = SkillBase & {
   id: number;
 }
@@ -25,6 +32,15 @@ export type ProjectRead = ProjectBase & {
 
 export type ProjectCreate = ProjectBase & {
   skills: number[]; // array of skill IDs
+}
+
+export type LearningRead = LearningBase & {
+  id: number;
+  skills: SkillRead[];
+}
+
+export type LearningCreate = LearningBase & {
+  skill_ids: number[]; // array of skill IDs
 }
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
@@ -49,12 +65,23 @@ async function fetchSkills(): Promise<SkillRead[]> {
   return skillsArray;
 }
 
+async function fetchLearnings(): Promise<LearningRead[]> {
+  const res = await fetch(`${API_URL}/learnings/`, {next: { revalidate: 0}, cache:"no-store"});
+  if (!res.ok) {
+    console.error("Failed to fetch learnings")
+    return [];
+  }
+  const learningsArray = (await res.json()) as LearningRead[];
+  return learningsArray;
+}
+
 export default async function HomePage() {
 
   const allProjects = await fetchProjects();
   const ongoingProjects = allProjects.filter(p => !p.is_completed);
   const completedProjects = allProjects.filter(p => p.is_completed);
   const skills = await fetchSkills();
+  const learnings = await fetchLearnings();
 
   return (
     <main className="p-8 min-h-screen">
@@ -79,12 +106,54 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* Learning Section */}
+      <section className="mb-16">
+        <h2 className="text-2xl font-semibold mb-6">Learnings</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {learnings.map((learning) => (
+            <a
+              key={learning.id}
+              href={learning.url || '#'}
+              target={learning.url ? "_blank" : undefined}
+              rel={learning.url ? "noopener noreferrer" : undefined}
+              className={`block p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow ${
+                learning.url ? 'cursor-pointer' : 'cursor-default'
+              }`}
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <h3 className="text-lg font-semibold">{learning.title}</h3>
+                <span
+                  className={`text-xs px-2 py-1 rounded ${
+                    learning.is_completed
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-yellow-100 text-yellow-800'
+                  }`}
+                >
+                  {learning.is_completed ? 'Completed' : 'Ongoing'}
+                </span>
+              </div>
+              <p className="text-gray-700 mb-3">{learning.description}</p>
+              {learning.skills && learning.skills.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {learning.skills.map((skill) => (
+                    <span
+                      key={skill.id}
+                      className="text-xs px-2 py-1 rounded bg-blue-100 text-blue-800"
+                    >
+                      {skill.name}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </a>
+          ))}
+        </div>
+      </section>
+        
+
       {/* Placeholders for other sections */}
       <section className="text-gray-500 italic">
         <h2 className="text-2xl font-semibold mb-6">More features coming soon</h2>
-        <p>[Skills Progress Section Placeholder]</p>
-        <p>[Readings Section Placeholder]</p>
-        <p>[Dashboard Stats Placeholder]</p>
       </section>
     </main>
   );

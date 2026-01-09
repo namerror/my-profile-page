@@ -30,3 +30,18 @@ class ProjectRead(ProjectBase):
     skills: List[SkillRead] = []
     class Config:
         orm_mode = True
+
+class LearningBase(BaseModel):
+    title: str
+    url: Optional[str] = None
+    description: str
+    is_completed: bool = False
+
+class LearningCreate(LearningBase):
+    skill_ids: List[int] = []
+
+class LearningRead(LearningBase):
+    id: int
+    skills: List[SkillRead] = []
+    class Config:
+        orm_mode = True
