@@ -3,7 +3,7 @@ export default function ProjectsPage() {
     <main className="p-8">
       <h1 className="text-2xl font-bold">Projects</h1>
       <p className="mt-2 text-gray-600">
-        Currently No Projects
+        This page hasn't been implemented yet.
       </p>
     </main>
   );

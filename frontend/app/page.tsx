@@ -84,7 +84,7 @@ export default async function HomePage() {
   const learnings = await fetchLearnings();
 
   return (
-    <main className="p-8 min-h-screen">
+    <main className="p-8 min-h-screen max-w-7xl mx-auto">
       {/* Placeholder for Profile */}
       <section className="mb-12 text-center">
         <h1 className="text-3xl font-bold mb-2">Leon Long</h1>
@@ -116,7 +116,7 @@ export default async function HomePage() {
               href={learning.url || '#'}
               target={learning.url ? "_blank" : undefined}
               rel={learning.url ? "noopener noreferrer" : undefined}
-              className={`block p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow ${
+              className={`block p-4 bg-[#f2f3f3] hover:bg-[#fafafa] rounded-lg shadow-md hover:shadow-lg transition-shadow ${
                 learning.url ? 'cursor-pointer' : 'cursor-default'
               }`}
             >
@@ -125,8 +125,8 @@ export default async function HomePage() {
                 <span
                   className={`text-xs px-2 py-1 rounded ${
                     learning.is_completed
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-yellow-100 text-yellow-800'
+                      ? 'bg-white text-black'
+                      : 'bg-[#2b2b2a] text-white'
                   }`}
                 >
                   {learning.is_completed ? 'Completed' : 'Ongoing'}
@@ -138,7 +138,7 @@ export default async function HomePage() {
                   {learning.skills.map((skill) => (
                     <span
                       key={skill.id}
-                      className="text-xs px-2 py-1 rounded bg-blue-100 text-blue-800"
+                      className="text-xs px-2 py-1 rounded bg-gray-200 text-gray-700"
                     >
                       {skill.name}
                     </span>
