@@ -1,4 +1,5 @@
 import ProjectCarousel from "./components/ProjectCarousel";
+import TiltSection from "./components/TiltSection";
 
 interface SkillBase {
   name: string;
@@ -86,10 +87,11 @@ export default async function HomePage() {
   return (
     <main className="p-8 min-h-screen max-w-7xl mx-auto">
       {/* Placeholder for Profile */}
-      <section className="mb-12 text-center">
-        <h1 className="text-3xl font-bold mb-2">Leon Long</h1>
-        <p>Here&apos;s an overview of Leon&apos;s profile</p>
-      </section>
+      <TiltSection>
+        <h1 className="text-4xl md:text-6xl lg:text-9xl font-bold mb-2 animate-[slideInTop_2s_ease-in-out]">Leon Long</h1>
+        <p className="mt-3 mb-3 animate-[fadeIn_2s_ease-in-out_0.9s_both]">Welcome to my profile page</p>
+        <h3 className="text-lg md:text-xl lg:text-2xl animate-[fadeIn_2s_ease-in-out_1.8s_both]">Student • Developer • Artist</h3>
+      </TiltSection>
 
       {/* Project Snapshot Section */}
       <section className="mb-16">
