@@ -74,7 +74,7 @@ export default function Navbar() {
               About
             </Link>
             <Link 
-              href="#contact" 
+              href="contact" 
               className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
