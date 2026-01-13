@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .models import *
-from .db.session import engine
-from .db.base import Base
-from .api import projects, skills, auth, learnings
+# from .db.session import engine
+# from .db.base import Base
+from .api import projects, skills, auth, learnings, contact
 import os
 from dotenv import load_dotenv
 
@@ -22,12 +22,13 @@ app.add_middleware(
 )
 
 # create tables for dev
-Base.metadata.create_all(bind=engine)
+# Base.metadata.create_all(bind=engine)
 
 app.include_router(projects.router)
 app.include_router(skills.router)
 app.include_router(learnings.router)
 app.include_router(auth.router)
+app.include_router(contact.router)
 
 @app.get("/")
 def read_root():
