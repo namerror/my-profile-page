@@ -1,6 +1,6 @@
 ''' Pydantic request/response schemas '''
 
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from typing import List, Optional
 
 
@@ -45,3 +45,8 @@ class LearningRead(LearningBase):
     skills: List[SkillRead] = []
     class Config:
         orm_mode = True
+
+class ContactForm(BaseModel):
+    name: str
+    email: EmailStr
+    message: str
