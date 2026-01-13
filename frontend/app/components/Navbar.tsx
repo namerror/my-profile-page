@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link'; // Import Link from next/link
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -11,25 +12,25 @@ export default function Navbar() {
         <div className="flex items-center justify-between">
           {/* Logo/Name */}
           <div className="flex items-center">
-            <a href="/" className="text-xl font-bold text-gray-900 hover:text-gray-700 transition-colors">
+            <Link href="/" className="text-xl font-bold text-gray-900 hover:text-gray-700 transition-colors">
               Leon Long
-            </a>
+            </Link>
           </div>
 
           {/* Navigation Links - Desktop */}
           <div className="hidden md:flex items-center space-x-8">
-            <a href="/" className="text-gray-700 hover:text-gray-900 transition-colors">
+            <Link href="/" className="text-gray-700 hover:text-gray-900 transition-colors">
               Home
-            </a>
-            <a href="projects" className="text-gray-700 hover:text-gray-900 transition-colors">
+            </Link>
+            <Link href="projects" className="text-gray-700 hover:text-gray-900 transition-colors">
               Projects
-            </a>
-            <a href="#about" className="text-gray-700 hover:text-gray-900 transition-colors">
+            </Link>
+            <Link href="#about" className="text-gray-700 hover:text-gray-900 transition-colors">
               About
-            </a>
-            <a href="#contact" className="text-gray-700 hover:text-gray-900 transition-colors">
+            </Link>
+            <Link href="#contact" className="text-gray-700 hover:text-gray-900 transition-colors">
               Contact
-            </a>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -51,34 +52,34 @@ export default function Navbar() {
         {/* Mobile Menu - Dropdown */}
         {isMenuOpen && (
           <div className="md:hidden mt-4 pb-4 space-y-2">
-            <a 
+            <Link 
               href="/" 
               className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
               Home
-            </a>
-            <a 
+            </Link>
+            <Link 
               href="projects" 
               className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
               Projects
-            </a>
-            <a 
+            </Link>
+            <Link 
               href="#about" 
               className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
               About
-            </a>
-            <a 
+            </Link>
+            <Link 
               href="#contact" 
               className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
               Contact
-            </a>
+            </Link>
           </div>
         )}
       </div>
