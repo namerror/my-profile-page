@@ -87,6 +87,21 @@ async function fetchLearnings(): Promise<LearningRead[]> {
   return learningsArray;
 }
 
+async function fetchCategories(): Promise<CategoryRead[]> {
+  try {
+      const res = await fetch(`${API_URL}/categories/`, {next: { revalidate: 0}, cache:"no-store"});
+      if (!res.ok) {
+        console.error("Failed to fetch categories")
+        return [];
+      }
+      const data = await res.json();
+      return data as CategoryRead[];
+  } catch (err: unknown) {
+      console.error(err instanceof Error ? err.message : 'Failed to fetch categories');
+      return [];
+  }
+}
+
 export default async function HomePage() {
 
   const allProjects = await fetchProjects();
@@ -94,14 +109,14 @@ export default async function HomePage() {
   const completedProjects = allProjects.filter(p => p.is_completed);
   const skills = await fetchSkills();
   const learnings = await fetchLearnings();
-
+  const categories = await fetchCategories();
   return (
     <main className="p-8 min-h-screen max-w-7xl mx-auto">
       {/* Placeholder for Profile */}
       <TiltSection>
         <h1 className="text-4xl md:text-6xl lg:text-9xl font-bold mb-2 animate-[slideInTop_2s_ease-in-out]">Leon Long</h1>
         <p className="mt-3 mb-3 animate-[fadeIn_2s_ease-in-out_0.9s_both]">Welcome to my profile page</p>
-        <RoleRotator skills={skills} />
+        <RoleRotator skills={skills} categories={categories} />
         <div className="lg:hidden md:hidden animate-[fadeIn_2s_ease-in-out_1.8s_both]">Student • Developer • Artist</div>
       </TiltSection>
       

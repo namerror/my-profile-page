@@ -1,31 +1,45 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { SkillRead } from '../page';
+import { useState, useEffect, useMemo } from 'react';
+import { CategoryRead, SkillRead } from '../page';
+import { div } from 'framer-motion/client';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 const ROLES = ['Student', "Developer", "Artist"];
 
 interface RoleRotatorProps {
   skills: SkillRead[];
+  categories: CategoryRead[];
 }
 
-export default function RoleRotator({ skills }: RoleRotatorProps) {
+export default function RoleRotator({ skills, categories }: RoleRotatorProps) {
   const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
   const [hovered, setHovered] = useState(false);
+  const skillsByCategory = useMemo(() => {
+    const map = new Map<number, SkillRead[]>();
+    skills.forEach(skill => {
+      if (!skill.category_id) return;
+      if (!map.has(skill.category_id)) {
+        map.set(skill.category_id, []);
+      }
+      map.get(skill.category_id)!.push(skill);
+    });
+    return map;
+  }, [skills, categories]);
 
   useEffect(() => {
     const interval = setInterval(() => {
       if (!hovered) {
         setCurrentRoleIndex((prev) => (prev + 1) % ROLES.length);
       }
-    }, 2000);
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [hovered]);
   const currentRole = ROLES[currentRoleIndex];
 
   return (
-    <div className="animate-[fadeIn_2s_ease-in-out_1.8s_both] hidden sm:block">
+    <div className="animate-[fadeIn_2s_ease-in-out_1.8s_both] hidden sm:block min-h-[200px]">
       {/* Rotating Box */}
         <div className='text-center mt-4 cursor-default select-none' onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
         {ROLES.map((role, index) => (
@@ -54,9 +68,25 @@ export default function RoleRotator({ skills }: RoleRotatorProps) {
         )}
 
         {currentRole === 'Developer' && (
-          <p className="text-center text-gray-800">
-            {skills.map(skill => skill.name).join(', ')}
-          </p>
+          <div className="w-full">
+            {categories.map(cat => (
+              <div key={cat.id} className='flex items-center gap-2 mb-2'>
+                <span className="px-2 py-1 bg-gray-200 rounded text-sm whitespace-nowrap">
+                  {cat.name}
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {(skillsByCategory.get(cat.id) || []).map(skill => (
+                    <span
+                      key={skill.id}
+                      className="px-2 py-1 bg-gray-300 rounded-full text-sm"
+                    >
+                      {skill.name}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
         )}
 
         {currentRole === 'Artist' && (
