@@ -1,9 +1,11 @@
 import ProjectCarousel from "./components/ProjectCarousel";
+import RoleRotator from "./components/RoleRotator";
 import TiltSection from "./components/TiltSection";
 
 interface SkillBase {
   name: string;
   parent_id: number | null;
+  category_id: number | null;
 }
 
 interface ProjectBase {
@@ -18,6 +20,10 @@ interface LearningBase {
   url: string | null;
   description: string;
   is_completed: boolean;
+}
+
+interface CategoryBase {
+  name: string;
 }
 
 export type SkillRead = SkillBase & {
@@ -44,6 +50,11 @@ export type LearningCreate = LearningBase & {
   skill_ids: number[]; // array of skill IDs
 }
 
+export type CategoryRead = CategoryBase & {
+  id: number;
+}
+
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 async function fetchProjects(): Promise<ProjectRead[]> {
@@ -56,7 +67,7 @@ async function fetchProjects(): Promise<ProjectRead[]> {
 }
 
 // returns an array of skills
-async function fetchSkills(): Promise<SkillRead[]> {
+export async function fetchSkills(): Promise<SkillRead[]> {
   const res = await fetch(`${API_URL}/skills/`, {next: { revalidate: 0}, cache:"no-store"});
   if (!res.ok) {
     console.error("Failed to fetch skills")
@@ -90,9 +101,10 @@ export default async function HomePage() {
       <TiltSection>
         <h1 className="text-4xl md:text-6xl lg:text-9xl font-bold mb-2 animate-[slideInTop_2s_ease-in-out]">Leon Long</h1>
         <p className="mt-3 mb-3 animate-[fadeIn_2s_ease-in-out_0.9s_both]">Welcome to my profile page</p>
-        <h3 className="text-lg md:text-xl lg:text-2xl animate-[fadeIn_2s_ease-in-out_1.8s_both]">Student • Developer • Artist</h3>
+        <RoleRotator skills={skills} />
+        <div className="lg:hidden md:hidden animate-[fadeIn_2s_ease-in-out_1.8s_both]">Student • Developer • Artist</div>
       </TiltSection>
-
+      
       {/* Project Snapshot Section */}
       <section className="mb-16">
         <h2 className="text-2xl font-semibold mb-6">Projects</h2>

@@ -1,12 +1,13 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { SkillRead } from '@/app/page';
+import { SkillRead, CategoryRead } from '@/app/page';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export default function SkillManager() {
     const [skills, setSkills] = useState<SkillRead[]>([]);
+    const [categories, setCategories] = useState<CategoryRead[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [editing, setEditing] = useState<SkillRead | null>(null);
@@ -18,10 +19,16 @@ export default function SkillManager() {
         return map;
     }, [skills]);
 
+    const categoriesMap = useMemo(() => {
+        const map = new Map<number, CategoryRead>();
+        categories.forEach(category => map.set(category.id, category));
+        return map;
+    }, [categories]);
+
     // form states
     const [name, setName] = useState('');
     const [parent, setParent] = useState<number | null>(null);
-
+    const [category, setCategory] = useState<number | null>(null);
     const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
 
     const authHeaders = {
@@ -40,13 +47,26 @@ export default function SkillManager() {
         }
     }
 
+    async function fetchCategories() {
+        try {
+            const res = await fetch(`${API_URL}/categories/`, { headers: authHeaders });
+            if (!res.ok) throw new Error('Failed to fetch categories');
+            const categoryArray = (await res.json()) as CategoryRead[];
+            setCategories(categoryArray);
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : 'Failed to fetch categories');
+        }
+    }
+
     useEffect(() => {
         fetchSkills().finally(() => setLoading(false));
+        fetchCategories().finally(() => setLoading(false));
     }, []);
 
     function resetForm() {
         setName('');
         setParent(null);
+        setCategory(null);
         setEditing(null);
         setShowForm(false);
     }
@@ -55,6 +75,7 @@ export default function SkillManager() {
         setEditing(skill);
         setName(skill.name);
         setParent(skill.parent_id ?? null);
+        setCategory(skill.category_id ?? null);
         setShowForm(true);
     }
 
@@ -62,7 +83,8 @@ export default function SkillManager() {
         e.preventDefault();
         const payload = {
             name: name,
-            parent_id: parent
+            parent_id: parent,
+            category_id: category,
         };
 
         try {
@@ -157,6 +179,22 @@ export default function SkillManager() {
                 </div>
             </div>
 
+            <div className="mb-3">
+                <label className="block text-sm font-medium mb-1">Category</label>
+                <select
+                    value={category ?? ''}
+                    onChange={(e) => setCategory(e.target.value ? Number(e.target.value) : null)}
+                    className="w-full border p-2 rounded"
+                >
+                    <option value="">No Category</option>
+                    {categories.map((cat) => (
+                        <option key={cat.id} value={cat.id}>
+                            {cat.name}
+                        </option>
+                    ))}
+                </select>
+            </div>
+
             <div className="flex gap-2">
                 <button
                 type="submit"
@@ -209,6 +247,16 @@ export default function SkillManager() {
                     </span>
                     ) : (
                     <span className="px-2 py-1 bg-gray-200 rounded">No Parent</span>
+                    )}
+                </div>
+
+                <div className='flex items-center gap-2 text-sm mt-2'>
+                    {skill.category_id ? (
+                    <span className="px-2 py-1 bg-gray-200 rounded">
+                        Category: {categoriesMap.get(skill.category_id)?.name || 'Unknown'}
+                    </span>
+                    ) : (
+                    <span className="px-2 py-1 bg-gray-200 rounded">No Category</span>
                     )}
                 </div>
                 </div>

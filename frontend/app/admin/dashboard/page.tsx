@@ -5,11 +5,12 @@ import { useRouter } from 'next/navigation';
 import ProjectManager from './ProjectManager';
 import SkillManager from './SkillManager';
 import LearningManager from './LearningManager';
+import CategoryManager from './CategoryManager';
 
 export default function AdminDashboard() {
   const router = useRouter();
   const [ok, setOk] = useState(false);
-  const [activeTab, setActiveTab] = useState<'projects' | 'skills' | 'learnings'>('projects');
+  const [activeTab, setActiveTab] = useState<'projects' | 'skills' | 'learnings' | 'categories'>('projects');
 
   useEffect(() => {
     const token = localStorage.getItem('admin_token');
@@ -70,6 +71,16 @@ export default function AdminDashboard() {
         >
           Learnings
         </button>
+        <button
+          onClick={() => setActiveTab('categories')}
+          className={`px-4 py-2 font-semibold ${
+            activeTab === 'categories'
+              ? 'border-b-2 border-blue-600 text-blue-600'
+              : 'text-gray-600 hover:text-gray-900'
+          }`}
+        >
+          Categories
+        </button>
       </div>
 
 
@@ -78,6 +89,7 @@ export default function AdminDashboard() {
       {activeTab === 'projects' && <ProjectManager />}
       {activeTab === 'skills' && <SkillManager />}
       {activeTab === 'learnings' && <LearningManager />}
+      {activeTab === 'categories' && <CategoryManager />}
     </main>
   );
 }

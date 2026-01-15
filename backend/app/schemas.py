@@ -7,11 +7,23 @@ from typing import List, Optional
 class SkillBase(BaseModel):
     name: str
     parent_id: Optional[int] = None
+    category_id: Optional[int] = None
 
 class SkillCreate(SkillBase):
     pass
 
 class SkillRead(SkillBase):
+    id: int
+    class Config:
+        orm_mode = True
+
+class CategoryBase(BaseModel):
+    name: str
+
+class CategoryCreate(CategoryBase):
+    pass
+
+class CategoryRead(CategoryBase):
     id: int
     class Config:
         orm_mode = True
