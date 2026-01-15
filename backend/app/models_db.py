@@ -18,13 +18,19 @@ learning_skill = Table(
     Column("skill_id", Integer, ForeignKey("skills.id"), primary_key=True),
 )
 
+class Category(Base):
+    __tablename__ = "categories"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    name: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=False)
+
 class Skill(Base):
     __tablename__ = "skills"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     name: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=False)
     parent_id: Mapped[int] = mapped_column(Integer, ForeignKey("skills.id"), nullable=True)
     parent = relationship("Skill", remote_side=[id], backref="children")
-
+    category_id: Mapped[int] = mapped_column(Integer, ForeignKey("categories.id"), nullable=True)
+    category = relationship("Category", backref="skills")
 class Project(Base):
     __tablename__ = "projects"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)

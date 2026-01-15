@@ -5,6 +5,7 @@ import TiltSection from "./components/TiltSection";
 interface SkillBase {
   name: string;
   parent_id: number | null;
+  category_id: number | null;
 }
 
 interface ProjectBase {
@@ -19,6 +20,10 @@ interface LearningBase {
   url: string | null;
   description: string;
   is_completed: boolean;
+}
+
+interface CategoryBase {
+  name: string;
 }
 
 export type SkillRead = SkillBase & {
@@ -44,6 +49,11 @@ export type LearningRead = LearningBase & {
 export type LearningCreate = LearningBase & {
   skill_ids: number[]; // array of skill IDs
 }
+
+export type CategoryRead = CategoryBase & {
+  id: number;
+}
+
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 

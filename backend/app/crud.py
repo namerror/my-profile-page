@@ -1,5 +1,6 @@
 ''' DB CRUD helpers (create/read/update/delete)'''
 
+from unicodedata import name
 from sqlalchemy.orm import Session
 from . import models_db, schemas
 
@@ -18,20 +19,22 @@ def get_skill_by_name(db: Session, name: str):
 def get_skill(db: Session, skill_id: int):
     return db.query(models_db.Skill).get(skill_id)
 
-def create_skill_if_missing(db: Session, name: str, parent_id: int | None = None):
+def create_skill_if_missing(db: Session, name: str, parent_id: int | None = None, category_id: int | None = None):
     s = get_skill_by_name(db, name)
     if s:
         return s
-    s = models_db.Skill(name=name, parent_id=parent_id)
+    s = models_db.Skill(name=name, parent_id=parent_id, category_id=category_id)
     db.add(s)
     db.commit()
     db.refresh(s)
     return s
 
-def update_skill(db: Session, skill: models_db.Skill, name: str, parent_id: int | None = None):
+def update_skill(db: Session, skill: models_db.Skill, name: str, parent_id: int | None = None, category_id: int | None = None):
     skill.name = name
     if (parent_id is not None):
         skill.parent_id = parent_id
+    if (category_id is not None):
+        skill.category_id = category_id
     db.add(skill)
     db.commit()
     db.refresh(skill)
@@ -111,5 +114,23 @@ def update_learning(db: Session, learning: models_db.Learning, learning_in: sche
 
 def delete_learning(db: Session, learning: models_db.Learning):
     db.delete(learning)
+    db.commit()
+    return
+
+def list_categories(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models_db.Category).offset(skip).limit(limit).all()
+
+def get_category(db: Session, category_id: int):
+    return db.query(models_db.Category).get(category_id)
+
+def create_category(db: Session, category_in: schemas.CategoryCreate):
+    c = models_db.Category(name=category_in.name)
+    db.add(c)
+    db.commit()
+    db.refresh(c)
+    return c
+
+def delete_category(db: Session, category: models_db.Category):
+    db.delete(category)
     db.commit()
     return
