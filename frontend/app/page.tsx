@@ -3,6 +3,8 @@ import RoleRotator from "./components/RoleRotator";
 import TiltSection from "./components/TiltSection";
 import Link from 'next/link'; // Import Link from next/link
 import { FaLinkedin, FaGithub } from "react-icons/fa";
+import Image from "next/image";
+import ScrollEffect from "./components/ScrollEffect";
 
 interface SkillBase {
   name: string;
@@ -113,7 +115,7 @@ export default async function HomePage() {
   const learnings = await fetchLearnings();
   const categories = await fetchCategories();
   return (
-    <main className="p-8 min-h-screen max-w-7xl mx-auto">
+    <main className="min-h-screen max-w-7xl mx-auto p-8">
       <div className="flex justify-end">
             <Link href="https://www.linkedin.com/in/leon-long-89a595317/" className="ml-4" target="_blank" rel="noopener noreferrer">
               <FaLinkedin size={24} />
@@ -122,6 +124,7 @@ export default async function HomePage() {
               <FaGithub size={24} />
             </Link>
       </div>
+      <ScrollEffect>
       {/* Placeholder for Profile */}
       <TiltSection>
         <h1 className="text-4xl md:text-6xl lg:text-9xl font-bold mb-2 animate-[slideInTop_2s_ease-in-out]">Leon Long</h1>
@@ -129,24 +132,33 @@ export default async function HomePage() {
         <RoleRotator skills={skills} categories={categories} />
         <div className="lg:hidden md:hidden animate-[fadeIn_2s_ease-in-out_1.8s_both]">Student • Developer • Artist</div>
       </TiltSection>
-      
       {/* Project Snapshot Section */}
-      <section className="mb-16">
-        <h2 className="text-2xl font-semibold mb-6">Projects</h2>
+      <section className="relative overflow-hidden p-6 bg-white rounded-xl ring-1 ring-gray-300/50 shadow-md">
+        <Image 
+          src="/white_glass.webp"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-black/80" />
+        <section className="relative z-10">
+          <h2 className="text-3xl font-bold mb-8 gradient-gray text-center">Projects</h2>
 
-        <div className="mb-10">
-          <h3 className="text-lg font-semibold mb-3">Ongoing</h3>
-          <ProjectCarousel projects={ongoingProjects} />
-        </div>
+          <div className="mb-12">
+            <h3 className="text-xl font-semibold mb-4 gradient-gray pb-2 text-center">Ongoing</h3>
+            <ProjectCarousel projects={ongoingProjects} />
+          </div>
 
-        <div>
-          <h3 className="text-lg font-semibold mb-3">Completed</h3>
-          <ProjectCarousel projects={completedProjects}/>
-        </div>
+          <div>
+            <h3 className="text-xl font-semibold mb-4 gradient-gray pb-2 text-center">Completed</h3>
+            <ProjectCarousel projects={completedProjects}/>
+          </div>
+        </section>
       </section>
-
       {/* Learning Section */}
-      <section className="mb-16">
+      <section className="mb-16 bg-[#fafafa] p-6 rounded-xl shadow-md">
         <h2 className="text-2xl font-semibold mb-6">Learning</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {learnings.map((learning) => (
@@ -194,6 +206,7 @@ export default async function HomePage() {
       <section className="text-gray-500 italic">
         <h2 className="text-2xl font-semibold mb-6">More features coming soon</h2>
       </section>
+      </ScrollEffect>
     </main>
   );
 }
