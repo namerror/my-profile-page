@@ -24,7 +24,9 @@ export default function RootLayout({
       <body className="min-h-screen bg-gray-50 text-gray-900">
         <Navbar />
         <MomentumScroll>
-        {children}
+          <div className="pt-16">
+            {children}
+          </div>
         </MomentumScroll>
       </body>
     </html>
