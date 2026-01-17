@@ -10,14 +10,14 @@ export default function ProjectCard({
   skills,
 }: ProjectRead) {
   const statusColor =
-    is_completed ? "bg-white text-black" : "bg-[#2b2b2a] text-white";
+    is_completed ? "bg-[#2b2b2a] text-[#fafafa]" : "bg-gray-200 text-[#212121]";
 
   return (
     <Link href={`/projects/${id}`}>
-      <div className="bg-[#fafafa] hover:bg-white rounded-2xl shadow hover:shadow-lg transition p-5 flex flex-col justify-between cursor-pointer h-full">
+      <div className="bg-[#212121] hover:bg-[#353535] rounded-2xl shadow hover:shadow-lg transition p-5 flex flex-col justify-between cursor-pointer h-full min-h-[250px]">
         <div>
-          <h3 className="text-lg font-bold mb-2">{name}</h3>
-          <p className="text-sm mb-3 line-clamp-3">{description}</p>
+          <h3 className="text-lg font-bold mb-2 gradient-white">{name}</h3>
+          <p className="text-sm mb-3 line-clamp-5 gradient-white">{description}</p>
         </div>
 
         <div className="mt-auto space-y-2">
@@ -31,7 +31,7 @@ export default function ProjectCard({
             {skills.map((skill, index) => (
               <span
                 key={index}
-                className="text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded-full"
+                className="text-xs bg-[#393939] text-[#fafafa] px-2 py-1 rounded-full"
               >
                 {skill.name}
               </span>

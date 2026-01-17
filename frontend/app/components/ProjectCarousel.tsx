@@ -8,13 +8,29 @@ import { ProjectRead } from "../page"
 
 interface ProjectCarouselProps {
   projects: ProjectRead[];
-  itemsPerPage?: number;
   autoplayInterval?: number;
 }
 
-export default function ProjectCarousel({ projects, itemsPerPage = 3, autoplayInterval = 5000 }: ProjectCarouselProps) {
+export default function ProjectCarousel({ projects, autoplayInterval = 5000 }: ProjectCarouselProps) {
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState(1); // 1 for next page (to the right)
+  const [itemsPerPage, setItemsPerPage] = useState(3);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 640) {
+        setItemsPerPage(1); // mobile
+      } else if (window.innerWidth < 1024) {
+        setItemsPerPage(2); // tablet
+      } else {
+        setItemsPerPage(3); // desktop
+      }
+    };
+
+    handleResize(); // Set initial itemsPerPage based on current window size
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const totalPages = Math.ceil(projects.length / itemsPerPage);
   const startIdx = page * itemsPerPage;
@@ -75,7 +91,7 @@ export default function ProjectCarousel({ projects, itemsPerPage = 3, autoplayIn
             animate="center"
             exit="exit"
             transition={{ duration: 0.25 }}
-            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+            className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
           >
             {visibleProjects.map((project, idx) => (
               <ProjectCard key={idx} {...project} />
@@ -83,54 +99,57 @@ export default function ProjectCarousel({ projects, itemsPerPage = 3, autoplayIn
           </motion.div>
         </AnimatePresence>
       </div>
-      {/* Navigation buttons - overlayed next to the cards */}
-      <button
-        onClick={handlePrev}
-        aria-label="Previous page"
-        className="absolute left-3 top-1/2 -translate-y-1/2 -translate-x-full z-10 text-gray-500 hover:text-black transition bg-white/80 rounded-full p-2 shadow"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-left-icon lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
-      </button>
 
-      <button
-        onClick={handleNext}
-        aria-label="Next page"
-        className="absolute right-3 top-1/2 -translate-y-1/2 translate-x-full z-10 text-gray-500 hover:text-black transition bg-white/80 rounded-full p-2 shadow"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right-icon lucide-arrow-right"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-      </button>
+      {/* Navigation buttons - below the cards */}
+      <div className="flex justify-center items-center gap-4 mt-6">
+        <button
+          onClick={handlePrev}
+          aria-label="Previous page"
+          className="text-gray-500 hover:text-black transition bg-white/80 rounded-full p-2 shadow"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-left-icon lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+        </button>
 
-      {/* Pagination dots with active progress bar */}
-      <div className="flex justify-center mt-3 space-x-2 items-center">
-        {Array.from({ length: totalPages }).map((_, i) => {
-          const isActive = i === page;
+        {/* Pagination dots with active progress bar */}
+        <div className="flex justify-center space-x-2 items-center">
+          {Array.from({ length: totalPages }).map((_, i) => {
+            const isActive = i === page;
 
-          return (
-            <button
-              key={i}
-              onClick={() => setPage(i)}
-              className="relative h-2 w-2 flex items-center justify-center"
-            >
-              {/* Inactive dot */}
-              {!isActive && (
-                <div className="h-2 w-2 rounded-full bg-gray-300" />
-              )}
+            return (
+              <button
+                key={i}
+                onClick={() => setPage(i)}
+                className="relative h-2 w-2 flex items-center justify-center"
+              >
+                {/* Inactive dot */}
+                {!isActive && (
+                  <div className="h-2 w-2 rounded-full bg-gray-300" />
+                )}
 
-              {/* Active progress bar */}
-              {isActive && (
-                <div className="h-2 w-6 rounded-full bg-gray-300 overflow-hidden">
-                  <motion.div
-                    key={page}  // restart animation every page change
-                    initial={{ width: 0 }}
-                    animate={{ width: "100%" }}
-                    transition={{ duration: autoplayInterval / 1000, ease: "linear" }}
-                    className="h-full bg-gray-950"
-                  />
-                </div>
-              )}
-            </button>
-          );
-        })}
+                {/* Active progress bar */}
+                {isActive && (
+                  <div className="h-2 w-6 rounded-full bg-gray-300 overflow-hidden">
+                    <motion.div
+                      key={page}  // restart animation every page change
+                      initial={{ width: 0 }}
+                      animate={{ width: "100%" }}
+                      transition={{ duration: autoplayInterval / 1000, ease: "linear" }}
+                      className="h-full bg-gray-950"
+                    />
+                  </div>
+                )}
+              </button>
+            );
+          })}
+        </div>
+
+        <button
+          onClick={handleNext}
+          aria-label="Next page"
+          className="text-gray-500 hover:text-black transition bg-white/80 rounded-full p-2 shadow"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right-icon lucide-arrow-right"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </button>
       </div>
     </div>
   );

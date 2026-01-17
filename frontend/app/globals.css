@@ -40,6 +40,32 @@
   }
 } */
 
+@layer components {
+  .gradient-white {
+    background: linear-gradient(90deg, #eae6ff,#f4f4f4);
+    background: -webkit-linear-gradient(90deg, #eae6ff,#f4f4f4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-dark {
+    background: linear-gradient(90deg, #000000,#0d1521,#070e18);
+    background: -webkit-linear-gradient(90deg, #000000,#0d1521,#070e18);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-gray {
+    background: -webkit-linear-gradient(90deg,#bdbdbd,#dedede,#ffffff); /* Chrome 10-25, Safari 5.1-6 */ 
+    background: linear-gradient(90deg,#bdbdbd,#dedede,#ffffff); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
