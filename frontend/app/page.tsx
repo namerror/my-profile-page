@@ -1,6 +1,8 @@
 import ProjectCarousel from "./components/ProjectCarousel";
 import RoleRotator from "./components/RoleRotator";
 import TiltSection from "./components/TiltSection";
+import Link from 'next/link'; // Import Link from next/link
+import { FaLinkedin, FaGithub } from "react-icons/fa";
 
 interface SkillBase {
   name: string;
@@ -112,6 +114,14 @@ export default async function HomePage() {
   const categories = await fetchCategories();
   return (
     <main className="p-8 min-h-screen max-w-7xl mx-auto">
+      <div className="flex justify-end">
+            <Link href="https://www.linkedin.com/in/leon-long-89a595317/" className="ml-4" target="_blank" rel="noopener noreferrer">
+              <FaLinkedin size={24} />
+            </Link> 
+            <Link href="https://github.com/namerror/" className="ml-4" target="_blank" rel="noopener noreferrer">
+              <FaGithub size={24} />
+            </Link>
+      </div>
       {/* Placeholder for Profile */}
       <TiltSection>
         <h1 className="text-4xl md:text-6xl lg:text-9xl font-bold mb-2 animate-[slideInTop_2s_ease-in-out]">Leon Long</h1>

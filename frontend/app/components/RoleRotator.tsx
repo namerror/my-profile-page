@@ -15,9 +15,12 @@ interface RoleRotatorProps {
 export default function RoleRotator({ skills, categories }: RoleRotatorProps) {
   const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
   const [hovered, setHovered] = useState(false);
+  const sorted_skills = useMemo(() => {
+    return skills.slice().sort((a, b) => a.name.localeCompare(b.name));
+  }, [skills]);
   const skillsByCategory = useMemo(() => {
     const map = new Map<number, SkillRead[]>();
-    skills.forEach(skill => {
+    sorted_skills.forEach(skill => {
       if (!skill.category_id) return;
       if (!map.has(skill.category_id)) {
         map.set(skill.category_id, []);
@@ -25,7 +28,7 @@ export default function RoleRotator({ skills, categories }: RoleRotatorProps) {
       map.get(skill.category_id)!.push(skill);
     });
     return map;
-  }, [skills, categories]);
+  }, [sorted_skills, categories]);
 
   useEffect(() => {
     const interval = setInterval(() => {
