@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "./components/Navbar";
+import MomentumScroll from "./components/MomentumScroll";
 
 export const metadata: Metadata = {
   title: "My Profile Page",
@@ -22,7 +23,9 @@ export default function RootLayout({
     <html lang="en">
       <body className="min-h-screen bg-gray-50 text-gray-900">
         <Navbar />
+        <MomentumScroll>
         {children}
+        </MomentumScroll>
       </body>
     </html>
   );
