@@ -133,7 +133,7 @@ export default async function HomePage() {
         <div className="lg:hidden md:hidden animate-[fadeIn_2s_ease-in-out_1.8s_both]">Student • Developer • Artist</div>
       </TiltSection>
       {/* Project Snapshot Section */}
-      <section className="relative overflow-hidden p-6 bg-white rounded-xl ring-1 ring-gray-300/50 shadow-md">
+      <section className="relative overflow-hidden p-6 bg-white rounded-xl ring-1 ring-gray-300/50 shadow-md ">
         <Image 
           src="/white_glass.webp"
           alt=""

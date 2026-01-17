@@ -55,7 +55,7 @@ export default function ProjectCarousel({ projects, autoplayInterval = 5000 }: P
   return (
     <div className="relative m-1.5">
       {/* Project cards */}
-      <div className="overflow-hidden p-5">
+      <div className="overflow-hidden p-2 sm:p-5">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={page}
@@ -101,7 +101,7 @@ export default function ProjectCarousel({ projects, autoplayInterval = 5000 }: P
       </div>
 
       {/* Navigation buttons - below the cards */}
-      <div className="flex justify-center items-center gap-4 mt-6">
+      <div className="flex justify-center items-center gap-4 mt-2 sm:mt-4 md:mt-6"> 
         <button
           onClick={handlePrev}
           aria-label="Previous page"
