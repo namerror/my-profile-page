@@ -21,7 +21,7 @@ const MomentumScroll = ({ children }: MomentumScrollProps): JSX.Element => {
 
   const resizeScrollableHeight = useCallback(
     (entries: ResizeObserverEntry[]) => {
-      for (let entry of entries) {
+      for (const entry of entries) {
         setScrollableHeight(entry.contentRect.height);
       }
     },
@@ -34,7 +34,7 @@ const MomentumScroll = ({ children }: MomentumScrollProps): JSX.Element => {
     );
     scrollRef.current && resizeObserver.observe(scrollRef.current);
     return () => resizeObserver.disconnect();
-  }, []);
+  }, [resizeScrollableHeight]);
 
   const { scrollY } = useScroll();
 
