@@ -13,6 +13,10 @@
   --font-mono: var(--font-geist-mono);
 }
 
+@theme {
+  --breakpoint-xs: 23rem;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
