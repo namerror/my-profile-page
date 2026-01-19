@@ -30,7 +30,7 @@ export default function ProjectsPage() {
   const ongoingProjects = projects.filter(p => !p.is_completed);
   const completedProjects = projects.filter(p => p.is_completed);
 
-  const handleDragEnd = (e: any, { offset, velocity }: any) => {
+  const handleDragEnd = (e: unknown, { offset, velocity }: { offset: { x: number; y: number }; velocity: { x: number; y: number } }) => {
     const swipe = Math.abs(offset.x) * velocity.x;
 
     if (swipe < -1000) {
