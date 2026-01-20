@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from .models import *
 # from .db.session import engine
 # from .db.base import Base
-from .api import projects, skills, auth, learnings, contact, categories
+from .api import projects, skills, auth, learnings, contact, categories, activities
 import os
 from dotenv import load_dotenv
 
@@ -30,6 +30,7 @@ app.include_router(learnings.router)
 app.include_router(auth.router)
 app.include_router(contact.router)
 app.include_router(categories.router)
+app.include_router(activities.router)
 
 @app.get("/")
 def read_root():

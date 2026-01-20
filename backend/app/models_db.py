@@ -18,6 +18,13 @@ learning_skill = Table(
     Column("skill_id", Integer, ForeignKey("skills.id"), primary_key=True),
 )
 
+activity_skill = Table(
+    "activity_skill",
+    Base.metadata,
+    Column("activity_id", Integer, ForeignKey("activities.id"), primary_key=True),
+    Column("skill_id", Integer, ForeignKey("skills.id"), primary_key=True),
+)
+
 class Category(Base):
     __tablename__ = "categories"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
@@ -49,3 +56,16 @@ class Learning(Base):
     description: Mapped[str] = mapped_column(Text, nullable=True)
     skills = relationship("Skill", secondary=learning_skill, backref="learnings")
     is_completed: Mapped[bool] = mapped_column(Boolean, default=False)
+
+# Activities include past/current jobs, volunteer work, internships, study etc.
+class Activity(Base):
+    __tablename__ = "activities"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    title: Mapped[str] = mapped_column(String, index=True, nullable=False)
+    type: Mapped[str] = mapped_column(String, nullable=False)  # e.g., "job", "volunteer", "internship", "study"
+    organization: Mapped[str] = mapped_column(String, nullable=True)
+    description: Mapped[str] = mapped_column(Text, nullable=True)
+    start_date: Mapped[str] = mapped_column(String, nullable=True)  # ISO format date
+    end_date: Mapped[str] = mapped_column(String, nullable=True)    # ISO format date
+    is_current: Mapped[bool] = mapped_column(Boolean, default=False)
+    skills = relationship("Skill", secondary=activity_skill, backref="activities") # skills associated with this activity
