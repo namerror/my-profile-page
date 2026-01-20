@@ -134,3 +134,51 @@ def delete_category(db: Session, category: models_db.Category):
     db.delete(category)
     db.commit()
     return
+
+def list_activities(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models_db.Activity).offset(skip).limit(limit).all()
+
+def get_activity(db: Session, activity_id: int):
+    return db.query(models_db.Activity).filter(models_db.Activity.id == activity_id).first()
+
+def create_activity(db: Session, activity_in: schemas.ActivityCreate):
+    activity = models_db.Activity(
+        title=activity_in.title,
+        type=activity_in.type,
+        organization=activity_in.organization,
+        description=activity_in.description,
+        start_date=activity_in.start_date,
+        end_date=activity_in.end_date,
+        is_current=activity_in.is_current,
+    )
+    if activity_in.skill_ids:
+        skills = db.query(models_db.Skill).filter(models_db.Skill.id.in_(activity_in.skill_ids)).all()
+        activity.skills = skills
+    db.add(activity)
+    db.commit()
+    db.refresh(activity)
+    return activity
+
+def update_activity(db: Session, activity: models_db.Activity, activity_in: schemas.ActivityCreate):
+    activity.title = activity_in.title
+    activity.type = activity_in.type
+    if activity_in.organization is not None:
+        activity.organization = activity_in.organization
+    if activity_in.description is not None:
+        activity.description =  activity_in.description
+    if activity_in.start_date is not None:
+        activity.start_date = activity_in.start_date
+    if activity_in.end_date is not None:
+        activity.end_date = activity_in.end_date
+    activity.is_current = activity_in.is_current
+    if activity_in.skill_ids is not None:
+        activity.skills = db.query(models_db.Skill).filter(models_db.Skill.id.in_(activity_in.skill_ids)).all()
+    db.add(activity)
+    db.commit()
+    db.refresh(activity)
+    return activity
+
+def delete_activity(db: Session, activity: models_db.Activity):
+    db.delete(activity)
+    db.commit()
+    return

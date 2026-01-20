@@ -62,3 +62,22 @@ class ContactForm(BaseModel):
     name: str
     email: EmailStr
     message: str
+
+class ActivityBase(BaseModel):
+    title: str
+    type: str  # e.g., "job", "volunteer", "internship", "study"
+    organization: Optional[str] = None
+    description: Optional[str] = None
+    start_date: Optional[str] = None  # ISO format date string
+    end_date: Optional[str] = None  # ISO format date string
+    is_current: bool = False
+
+
+class ActivityCreate(ActivityBase):
+    skill_ids: List[int] = []
+
+class ActivityRead(ActivityBase):
+    id: int
+    skills: List[SkillRead] = []
+    class Config:
+        orm_mode = True
