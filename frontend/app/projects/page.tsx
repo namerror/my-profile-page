@@ -55,19 +55,21 @@ export default function ProjectsPage() {
 
   return (
     <main className="p-8 max-w-7xl mx-auto">
-      <h1 className="text-2xl md:text-4xl font-bold mb-6 md:mb-12 text-center border-b-2 border-[#212121] pb-2">Projects</h1>
-      
+      <div className="mb-6 md:mb-12">
+        <h1 className="text-2xl md:text-4xl font-bold text-center mb-4 bg-gradient-to-r from-red-900 to-orange-700 bg-clip-text text-transparent">Projects</h1>
+        <p className="text-center text-gray-600 font-normal">Explore all projects I have worked on, both ongoing and completed.</p>
+      </div>
       {/* Desktop: Two Column Layout */}
-      <div className="hidden lg:grid grid-cols-2 gap-8">
+      <div className="hidden lg:grid grid-cols-2 gap-4">
         {/* Ongoing Projects */}
-        <div>
-          <h2 className="text-xl font-semibold mb-4">Ongoing</h2>
+        <div className="rounded-xl bg-[#f9f9f9] p-6">
+          <h2 className="text-xl font-semibold mb-4 text-center">Ongoing</h2>
           <TabContent projects={ongoingProjects} />
         </div>
 
         {/* Completed Projects */}
-        <div>
-          <h2 className="text-xl font-semibold mb-4">Completed</h2>
+        <div className="rounded-xl bg-[#4a4a4a] p-6">
+          <h2 className="text-xl font-semibold mb-4 text-center gradient-white">Completed</h2>
           <TabContent projects={completedProjects} />
         </div>
       </div>
