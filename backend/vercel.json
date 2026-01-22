@@ -1,5 +1,5 @@
 {
-  "buildCommand": "pip install --break-system-packages -r requirements.txt && python -m alembic -c alembic.ini upgrade head",
+  "buildCommand": "pip install -r requirements.txt && python -m alembic -c alembic.ini upgrade head",
   "outputDirectory": "backend",
   "env": {
     "PYTHONPATH": "backend"
