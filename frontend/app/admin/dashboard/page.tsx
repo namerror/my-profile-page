@@ -6,11 +6,12 @@ import ProjectManager from './ProjectManager';
 import SkillManager from './SkillManager';
 import LearningManager from './LearningManager';
 import CategoryManager from './CategoryManager';
+import ActivityManager from './ActivityManager';
 
 export default function AdminDashboard() {
   const router = useRouter();
   const [ok, setOk] = useState(false);
-  const [activeTab, setActiveTab] = useState<'projects' | 'skills' | 'learnings' | 'categories'>('projects');
+  const [activeTab, setActiveTab] = useState<'projects' | 'skills' | 'learnings' | 'categories' | 'activities'>('projects');
 
   useEffect(() => {
     const token = localStorage.getItem('admin_token');
@@ -81,6 +82,17 @@ export default function AdminDashboard() {
         >
           Categories
         </button>
+
+        <button
+          onClick={() => setActiveTab('activities')}
+          className={`px-4 py-2 font-semibold ${
+            activeTab === 'activities'
+              ? 'border-b-2 border-blue-600 text-blue-600'
+              : 'text-gray-600 hover:text-gray-900'
+          }`}
+        >
+          Activities
+        </button>
       </div>
 
 
@@ -90,6 +102,7 @@ export default function AdminDashboard() {
       {activeTab === 'skills' && <SkillManager />}
       {activeTab === 'learnings' && <LearningManager />}
       {activeTab === 'categories' && <CategoryManager />}
+      {activeTab === 'activities' && <ActivityManager />}
     </main>
   );
 }

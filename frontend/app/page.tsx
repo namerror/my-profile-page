@@ -30,6 +30,16 @@ interface CategoryBase {
   name: string;
 }
 
+interface ActivityBase {
+  title: string;
+  type: string;
+  organization: string | null;
+  description: string | null;
+  start_date: string | null;
+  end_date: string | null;
+  is_current: boolean;
+}
+
 export type SkillRead = SkillBase & {
   id: number;
 }
@@ -56,6 +66,11 @@ export type LearningCreate = LearningBase & {
 
 export type CategoryRead = CategoryBase & {
   id: number;
+}
+
+export type ActivityRead = ActivityBase & {
+    id: number;
+    skills: SkillRead[];
 }
 
 
