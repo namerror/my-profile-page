@@ -52,7 +52,7 @@ export default async function ActivitiesPage() {
     return (
         <div className="max-w-5xl mx-auto px-4 py-10">
             <div className='mb-6'>
-                <h1 className="text-3xl font-bold text-center mb-2">Activities</h1>
+                <h1 className="text-2xl md:text-4xl font-bold text-center mb-2">Activities</h1>
                 <p className='text-center text-gray-600'>Follow my current and past activities</p>
             </div>
             
@@ -67,19 +67,19 @@ export default async function ActivitiesPage() {
                         return (
                             <div
                                 key={activity.id}
-                                className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm"
+                                className={`rounded-lg border border-gray-200 ${activity.is_current ? 'bg-gradient-to-r from-stone-200 to-slate-100' : 'bg-white'} p-5 shadow-sm hover:shadow-md transition-shadow mx-2` }
                             >
                                 <div className="flex flex-wrap items-start gap-3 justify-between">
                                     <div>
                                         <div className="flex items-center gap-2">
-                                            <h2 className="text-xl font-semibold">{activity.title}</h2>
+                                            <h2 className="md:text-xl font-semibold">{activity.title}</h2>
                                             <span
-                                                className="text-xs px-2 py-1 rounded-full bg-blue-50 text-blue-700 capitalize"
+                                                className="text-xs px-2 py-1 rounded-full bg-gray-50 text-gray-700 font-semibold capitalize"
                                             >
                                                 {activity.type}
                                             </span>
                                             {activity.is_current && (
-                                                <span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-700">
+                                                <span className="text-xs px-2 py-1 rounded-full bg-[#2b2b2a] text-white font-semibold">
                                                     Currently active
                                                 </span>
                                             )}
