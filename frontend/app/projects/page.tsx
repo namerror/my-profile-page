@@ -4,7 +4,6 @@ import { ProjectRead } from "../page";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ProjectBar from "../components/ProjectBar";
-import Link from "next/link";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -12,6 +11,7 @@ export default function ProjectsPage() {
   const [projects, setProjects] = useState<ProjectRead[]>([]);
   const [activeTab, setActiveTab] = useState<"ongoing" | "completed">("ongoing");
   const [direction, setDirection] = useState(1); // 1 for left swipe, -1 for right swipe
+  const [isLoading, setIsLoading] = useState(true);
 
   async function fetchProjects() {
     const res = await fetch(`${API_URL}/projects`, { next: { revalidate: 0 }, cache: "no-store" });
@@ -21,6 +21,7 @@ export default function ProjectsPage() {
     } else {
       console.error("Failed to fetch projects");
     }
+    setIsLoading(false);
   }
   
   useEffect(() => {
@@ -55,93 +56,102 @@ export default function ProjectsPage() {
 
   return (
     <main className="p-8 max-w-7xl mx-auto">
-      <div className="mb-6 md:mb-12">
-        <h1 className="text-2xl md:text-4xl font-bold text-center mb-4 bg-gradient-to-r from-red-900 to-orange-700 bg-clip-text text-transparent">Projects</h1>
-        <p className="text-center text-gray-600 font-normal">Explore all projects I have worked on, both ongoing and completed.</p>
-      </div>
-      {/* Desktop: Two Column Layout */}
-      <div className="hidden lg:grid grid-cols-2 gap-4">
-        {/* Ongoing Projects */}
-        <div className="rounded-xl bg-[#f9f9f9] p-6">
-          <h2 className="text-xl font-semibold mb-4 text-center">Ongoing</h2>
-          <TabContent projects={ongoingProjects} />
+      {isLoading ? (
+        <div className="flex flex-col items-center justify-center min-h-[60vh]">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+          <p className="mt-4 text-gray-600">Loading projects...</p>
         </div>
-
-        {/* Completed Projects */}
-        <div className="rounded-xl bg-[#4a4a4a] p-6">
-          <h2 className="text-xl font-semibold mb-4 text-center gradient-white">Completed</h2>
-          <TabContent projects={completedProjects} />
-        </div>
-      </div>
-
-      {/* Mobile: Tab Layout */}
-      <div className="lg:hidden">
-        {/* Tab Switch */}
-        <div className="flex gap-2 mb-6">
-          <button
-            onClick={() => {
-              setDirection(1);
-              setActiveTab("ongoing");
-            }}
-            className={`flex-1 py-2 px-4 rounded-lg font-semibold transition-colors ${
-              activeTab === "ongoing"
-                ? "bg-[#212121] text-white"
-                : "bg-gray-200 text-gray-700"
-            }`}
-          >
-            Ongoing
-          </button>
-          <button
-            onClick={() => {
-              setDirection(1);
-              setActiveTab("completed");
-            }}
-            className={`flex-1 py-2 px-4 rounded-lg font-semibold transition-colors ${
-              activeTab === "completed"
-                ? "bg-[#212121] text-white"
-                : "bg-gray-200 text-gray-700"
-            }`}
-          >
-            Completed
-          </button>
-        </div>
-
-        {/* Swipeable Tab Content */}
-        <AnimatePresence mode="wait" custom={direction}>
-          <motion.div
-            key={activeTab}
-            custom={direction}
-            variants={{
-              enter: (dir: number) => ({
-                x: dir === 1 ? 100 : -100, // enter from right if swiped left, from left if swiped right
-                opacity: 0,
-              }),
-              center: {
-                x: 0,
-                opacity: 1,
-              },
-              exit: (dir: number) => ({
-                x: dir === 1 ? -100 : 100, // exit to left if swiped left, to right if swiped right
-                opacity: 0,
-              })
-            }}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{ duration: 0.3 }}
-            drag="x"
-            dragConstraints={{ left: 0, right: 0 }}
-            dragElastic={0.5}
-            onDragEnd={handleDragEnd}
-          >
-            {activeTab === "ongoing" ? (
+      ) : (
+        <>
+          <div className="mb-6 md:mb-12">
+            <h1 className="text-2xl md:text-4xl font-bold text-center mb-4 bg-gradient-to-r from-red-900 to-orange-700 bg-clip-text text-transparent">Projects</h1>
+            <p className="text-center text-gray-600 font-normal">Explore all projects I have worked on, both ongoing and completed.</p>
+          </div>
+          {/* Desktop: Two Column Layout */}
+          <div className="hidden lg:grid grid-cols-2 gap-4">
+            {/* Ongoing Projects */}
+            <div className="rounded-xl bg-[#f9f9f9] p-6">
+              <h2 className="text-xl font-semibold mb-4 text-center">Ongoing</h2>
               <TabContent projects={ongoingProjects} />
-            ) : (
+            </div>
+
+            {/* Completed Projects */}
+            <div className="rounded-xl bg-[#4a4a4a] p-6">
+              <h2 className="text-xl font-semibold mb-4 text-center gradient-white">Completed</h2>
               <TabContent projects={completedProjects} />
-            )}
-          </motion.div>
-        </AnimatePresence>
-      </div>
+            </div>
+          </div>
+
+          {/* Mobile: Tab Layout */}
+          <div className="lg:hidden">
+            {/* Tab Switch */}
+            <div className="flex gap-2 mb-6">
+              <button
+                onClick={() => {
+                  setDirection(1);
+                  setActiveTab("ongoing");
+                }}
+                className={`flex-1 py-2 px-4 rounded-lg font-semibold transition-colors ${
+                  activeTab === "ongoing"
+                    ? "bg-[#212121] text-white"
+                    : "bg-gray-200 text-gray-700"
+                }`}
+              >
+                Ongoing
+              </button>
+              <button
+                onClick={() => {
+                  setDirection(1);
+                  setActiveTab("completed");
+                }}
+                className={`flex-1 py-2 px-4 rounded-lg font-semibold transition-colors ${
+                  activeTab === "completed"
+                    ? "bg-[#212121] text-white"
+                    : "bg-gray-200 text-gray-700"
+                }`}
+              >
+                Completed
+              </button>
+            </div>
+
+            {/* Swipeable Tab Content */}
+            <AnimatePresence mode="wait" custom={direction}>
+              <motion.div
+                key={activeTab}
+                custom={direction}
+                variants={{
+                  enter: (dir: number) => ({
+                    x: dir === 1 ? 100 : -100, // enter from right if swiped left, from left if swiped right
+                    opacity: 0,
+                  }),
+                  center: {
+                    x: 0,
+                    opacity: 1,
+                  },
+                  exit: (dir: number) => ({
+                    x: dir === 1 ? -100 : 100, // exit to left if swiped left, to right if swiped right
+                    opacity: 0,
+                  })
+                }}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{ duration: 0.3 }}
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.5}
+                onDragEnd={handleDragEnd}
+              >
+                {activeTab === "ongoing" ? (
+                  <TabContent projects={ongoingProjects} />
+                ) : (
+                  <TabContent projects={completedProjects} />
+                )}
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </>
+      )}
     </main>
   );
 }
