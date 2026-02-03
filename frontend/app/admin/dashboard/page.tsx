@@ -2,16 +2,24 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import ProjectManager from './ProjectManager';
-import SkillManager from './SkillManager';
-import LearningManager from './LearningManager';
-import CategoryManager from './CategoryManager';
-import ActivityManager from './ActivityManager';
+import Manager from './Manager';
+import {
+  categoryConfig,
+  createSkillConfig,
+  createProjectConfig,
+  createLearningConfig,
+  createActivityConfig,
+  useSkillsData,
+  useCategoriesData,
+} from './managerConfigs';
 
 export default function AdminDashboard() {
   const router = useRouter();
   const [ok, setOk] = useState(false);
   const [activeTab, setActiveTab] = useState<'projects' | 'skills' | 'learnings' | 'categories' | 'activities'>('projects');
+
+  const { skills, fetchSkills } = useSkillsData();
+  const { categories, fetchCategories } = useCategoriesData();
 
   useEffect(() => {
     const token = localStorage.getItem('admin_token');
@@ -20,6 +28,9 @@ export default function AdminDashboard() {
       return;
     }
     setOk(true);
+    fetchSkills();
+    fetchCategories();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
   if (!ok) return <div className="p-8">Checking authentication...</div>;
@@ -98,11 +109,11 @@ export default function AdminDashboard() {
 
 
       {/* Tab Content */}
-      {activeTab === 'projects' && <ProjectManager />}
-      {activeTab === 'skills' && <SkillManager />}
-      {activeTab === 'learnings' && <LearningManager />}
-      {activeTab === 'categories' && <CategoryManager />}
-      {activeTab === 'activities' && <ActivityManager />}
+      {activeTab === 'projects' && <Manager config={createProjectConfig(skills)} />}
+      {activeTab === 'skills' && <Manager config={createSkillConfig(skills, categories)} />}
+      {activeTab === 'learnings' && <Manager config={createLearningConfig(skills)} />}
+      {activeTab === 'categories' && <Manager config={categoryConfig} />}
+      {activeTab === 'activities' && <Manager config={createActivityConfig(skills)} />}
     </main>
   );
 }
