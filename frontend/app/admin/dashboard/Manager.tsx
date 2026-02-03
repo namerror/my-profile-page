@@ -73,9 +73,6 @@ export default function Manager<T extends { id: number }, F = Record<string, unk
             }
         };
         loadData().finally(() => setLoading(false));
-        // We track config.apiEndpoint and config.fetchDependencies via fetchItems' dependencies
-        // Including the entire config object would cause unnecessary re-renders
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token, fetchItems, config.fetchDependencies]);
 
     function resetForm() {

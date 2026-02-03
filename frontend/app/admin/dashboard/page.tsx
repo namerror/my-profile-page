@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import Manager from './Manager';
 import {
@@ -20,6 +20,12 @@ export default function AdminDashboard() {
 
   const { skills, fetchSkills } = useSkillsData();
   const { categories, fetchCategories } = useCategoriesData();
+
+  // Memoize configs to prevent unnecessary re-renders
+  const projectConfig = useMemo(() => createProjectConfig(skills), [skills]);
+  const skillConfig = useMemo(() => createSkillConfig(skills, categories), [skills, categories]);
+  const learningConfig = useMemo(() => createLearningConfig(skills), [skills]);
+  const activityConfig = useMemo(() => createActivityConfig(skills), [skills]);
 
   useEffect(() => {
     const token = localStorage.getItem('admin_token');
@@ -108,11 +114,11 @@ export default function AdminDashboard() {
 
 
       {/* Tab Content */}
-      {activeTab === 'projects' && <Manager config={createProjectConfig(skills)} />}
-      {activeTab === 'skills' && <Manager config={createSkillConfig(skills, categories)} />}
-      {activeTab === 'learnings' && <Manager config={createLearningConfig(skills)} />}
+      {activeTab === 'projects' && <Manager config={projectConfig} />}
+      {activeTab === 'skills' && <Manager config={skillConfig} />}
+      {activeTab === 'learnings' && <Manager config={learningConfig} />}
       {activeTab === 'categories' && <Manager config={categoryConfig} />}
-      {activeTab === 'activities' && <Manager config={createActivityConfig(skills)} />}
+      {activeTab === 'activities' && <Manager config={activityConfig} />}
     </main>
   );
 }
