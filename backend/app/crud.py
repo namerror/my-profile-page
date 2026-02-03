@@ -210,20 +210,11 @@ def create_user(db: Session, user_in: schemas.UserCreate):
 
 def update_user(db: Session, user: models_db.User, user_in: schemas.UserUpdate):
     """Update the user profile"""
-    if user_in.name is not None:
-        user.name = user_in.name
-    if user_in.email is not None:
-        user.email = user_in.email
-    if user_in.phone_number is not None:
-        user.phone_number = user_in.phone_number
-    if user_in.linkedin_url is not None:
-        user.linkedin_url = user_in.linkedin_url
-    if user_in.github_url is not None:
-        user.github_url = user_in.github_url
-    if user_in.personal_website is not None:
-        user.personal_website = user_in.personal_website
-    if user_in.description is not None:
-        user.description = user_in.description
+    # Use exclude_unset=True to only update fields that were explicitly provided
+    update_data = user_in.model_dump(exclude_unset=True)
+    
+    for field, value in update_data.items():
+        setattr(user, field, value)
     
     db.add(user)
     db.commit()
