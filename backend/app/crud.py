@@ -182,3 +182,50 @@ def delete_activity(db: Session, activity: models_db.Activity):
     db.delete(activity)
     db.commit()
     return
+
+# User profile CRUD operations
+def get_user(db: Session):
+    """Get the single user profile"""
+    return db.query(models_db.User).first()
+
+def create_user(db: Session, user_in: schemas.UserCreate):
+    """Create the user profile - only one allowed"""
+    existing = get_user(db)
+    if existing:
+        raise ValueError("User profile already exists. Only one profile is allowed.")
+    
+    user = models_db.User(
+        name=user_in.name,
+        email=user_in.email,
+        phone_number=user_in.phone_number,
+        linkedin_url=user_in.linkedin_url,
+        github_url=user_in.github_url,
+        personal_website=user_in.personal_website,
+        description=user_in.description
+    )
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user
+
+def update_user(db: Session, user: models_db.User, user_in: schemas.UserUpdate):
+    """Update the user profile"""
+    if user_in.name is not None:
+        user.name = user_in.name
+    if user_in.email is not None:
+        user.email = user_in.email
+    if user_in.phone_number is not None:
+        user.phone_number = user_in.phone_number
+    if user_in.linkedin_url is not None:
+        user.linkedin_url = user_in.linkedin_url
+    if user_in.github_url is not None:
+        user.github_url = user_in.github_url
+    if user_in.personal_website is not None:
+        user.personal_website = user_in.personal_website
+    if user_in.description is not None:
+        user.description = user_in.description
+    
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user

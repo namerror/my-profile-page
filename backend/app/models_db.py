@@ -69,3 +69,15 @@ class Activity(Base):
     end_date: Mapped[str] = mapped_column(String, nullable=True)    # ISO format date
     is_current: Mapped[bool] = mapped_column(Boolean, default=False)
     skills = relationship("Skill", secondary=activity_skill, backref="activities") # skills associated with this activity
+
+# User profile - only one profile allowed for single-user application
+class User(Base):
+    __tablename__ = "users"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    name: Mapped[str] = mapped_column(String, nullable=False)
+    email: Mapped[str] = mapped_column(String, unique=True, nullable=False)
+    phone_number: Mapped[str] = mapped_column(String, nullable=True)
+    linkedin_url: Mapped[str] = mapped_column(String, nullable=True)
+    github_url: Mapped[str] = mapped_column(String, nullable=True)
+    personal_website: Mapped[str] = mapped_column(String, nullable=True)
+    description: Mapped[str] = mapped_column(Text, nullable=True)
