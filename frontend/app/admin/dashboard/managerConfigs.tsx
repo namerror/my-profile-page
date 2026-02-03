@@ -96,9 +96,9 @@ export const categoryConfig: ManagerConfig<CategoryRead, CategoryFormState> = {
 // Helper hook for skill-based managers
 export function useSkillsData() {
     const [skills, setSkills] = useState<SkillRead[]>([]);
-    const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
 
     const fetchSkills = useCallback(async () => {
+        const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
         try {
             const res = await fetch(`${API_URL}/skills/`, {
                 headers: {
@@ -112,7 +112,7 @@ export function useSkillsData() {
         } catch (err: unknown) {
             console.error(err);
         }
-    }, [token]);
+    }, []);
 
     return { skills, fetchSkills };
 }
@@ -120,9 +120,9 @@ export function useSkillsData() {
 // Helper hook for categories data
 export function useCategoriesData() {
     const [categories, setCategories] = useState<CategoryRead[]>([]);
-    const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
 
     const fetchCategories = useCallback(async () => {
+        const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
         try {
             const res = await fetch(`${API_URL}/categories/`, {
                 headers: {
@@ -136,7 +136,7 @@ export function useCategoriesData() {
         } catch (err: unknown) {
             console.error(err);
         }
-    }, [token]);
+    }, []);
 
     return { categories, fetchCategories };
 }
