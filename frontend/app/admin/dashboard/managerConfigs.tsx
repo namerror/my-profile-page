@@ -1,6 +1,6 @@
 import { ManagerConfig } from './Manager';
 import { ActivityRead, CategoryRead, LearningRead, ProjectRead, SkillRead } from '@/app/page';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -43,10 +43,6 @@ interface ActivityFormState {
 }
 
 // Category Manager Config
-interface CategoryFormState {
-    name: string;
-}
-
 export const categoryConfig: ManagerConfig<CategoryRead, CategoryFormState> = {
     entityName: 'Category',
     entityNamePlural: 'Categories',
@@ -102,7 +98,7 @@ export function useSkillsData() {
     const [skills, setSkills] = useState<SkillRead[]>([]);
     const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
 
-    const fetchSkills = async () => {
+    const fetchSkills = useCallback(async () => {
         try {
             const res = await fetch(`${API_URL}/skills/`, {
                 headers: {
@@ -116,7 +112,7 @@ export function useSkillsData() {
         } catch (err: unknown) {
             console.error(err);
         }
-    };
+    }, [token]);
 
     return { skills, fetchSkills };
 }
@@ -126,7 +122,7 @@ export function useCategoriesData() {
     const [categories, setCategories] = useState<CategoryRead[]>([]);
     const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
 
-    const fetchCategories = async () => {
+    const fetchCategories = useCallback(async () => {
         try {
             const res = await fetch(`${API_URL}/categories/`, {
                 headers: {
@@ -140,7 +136,7 @@ export function useCategoriesData() {
         } catch (err: unknown) {
             console.error(err);
         }
-    };
+    }, [token]);
 
     return { categories, fetchCategories };
 }

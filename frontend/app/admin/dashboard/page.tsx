@@ -30,8 +30,7 @@ export default function AdminDashboard() {
     setOk(true);
     fetchSkills();
     fetchCategories();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router]);
+  }, [router, fetchSkills, fetchCategories]);
 
   if (!ok) return <div className="p-8">Checking authentication...</div>;
 
