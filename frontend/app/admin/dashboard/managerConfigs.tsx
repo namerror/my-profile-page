@@ -49,10 +49,10 @@ export const categoryConfig: ManagerConfig<CategoryRead, CategoryFormState> = {
     apiEndpoint: 'categories',
     getInitialFormState: () => ({ name: '' }),
     resetFormData: ({ setFormState }) => {
-        setFormState({ name: '' } as Record<string, unknown>);
+        setFormState({ name: '' });
     },
     setFormData: (item, { setFormState }) => {
-        setFormState({ name: item.name } as Record<string, unknown>);
+        setFormState({ name: item.name });
     },
     getFormData: (formState) => ({
         name: formState.name,
@@ -159,14 +159,14 @@ export function createSkillConfig(skills: SkillRead[], categories: CategoryRead[
             category: null,
         }),
         resetFormData: ({ setFormState }) => {
-            setFormState({ name: '', parent: null, category: null } as Record<string, unknown>);
+            setFormState({ name: '', parent: null, category: null });
         },
         setFormData: (item, { setFormState }) => {
             setFormState({
                 name: item.name,
                 parent: item.parent_id ?? null,
                 category: item.category_id ?? null,
-            } as Record<string, unknown>);
+            });
         },
         getFormData: (formState) => ({
             name: formState.name,
@@ -298,7 +298,7 @@ export function createProjectConfig(skills: SkillRead[]): ManagerConfig<ProjectR
                 isCompleted: false,
                 selectedSkills: [],
                 content: null,
-            } as Record<string, unknown>);
+            });
         },
         setFormData: (item, { setFormState }) => {
             setFormState({
@@ -307,7 +307,7 @@ export function createProjectConfig(skills: SkillRead[]): ManagerConfig<ProjectR
                 isCompleted: item.is_completed,
                 content: item.content,
                 selectedSkills: item.skills.map((skill) => skill.id),
-            } as Record<string, unknown>);
+            });
         },
         getFormData: (formState) => ({
             name: formState.name,
@@ -458,7 +458,7 @@ export function createLearningConfig(skills: SkillRead[]): ManagerConfig<Learnin
                 description: '',
                 isCompleted: false,
                 selectedSkills: [],
-            } as Record<string, unknown>);
+            });
         },
         setFormData: (item, { setFormState }) => {
             setFormState({
@@ -467,7 +467,7 @@ export function createLearningConfig(skills: SkillRead[]): ManagerConfig<Learnin
                 description: item.description,
                 isCompleted: item.is_completed,
                 selectedSkills: item.skills.map((skill) => skill.id),
-            } as Record<string, unknown>);
+            });
         },
         getFormData: (formState) => ({
             title: formState.title,
@@ -639,7 +639,7 @@ export function createActivityConfig(skills: SkillRead[]): ManagerConfig<Activit
                 endDate: '',
                 isCurrent: false,
                 selectedSkills: [],
-            } as Record<string, unknown>);
+            });
         },
         setFormData: (item, { setFormState }) => {
             setFormState({
@@ -651,7 +651,7 @@ export function createActivityConfig(skills: SkillRead[]): ManagerConfig<Activit
                 endDate: item.end_date || '',
                 isCurrent: item.is_current,
                 selectedSkills: item.skills.map((skill) => skill.id),
-            } as Record<string, unknown>);
+            });
         },
         getFormData: (formState) => ({
             title: formState.title,

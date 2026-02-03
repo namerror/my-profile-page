@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -12,8 +12,8 @@ export interface ManagerConfig<T, F = Record<string, unknown>> {
     renderForm: (props: FormRenderProps<T, F>) => React.ReactNode;
     renderListItem: (props: ListItemRenderProps<T>) => React.ReactNode;
     getFormData: (formState: F) => Record<string, unknown>;
-    setFormData: (item: T, setters: FormSetters) => void;
-    resetFormData: (setters: FormSetters) => void;
+    setFormData: (item: T, setters: FormSetters<F>) => void;
+    resetFormData: (setters: FormSetters<F>) => void;
     getInitialFormState: () => F;
 }
 
@@ -30,8 +30,8 @@ export interface ListItemRenderProps<T> {
     onDelete: (id: number) => void;
 }
 
-export interface FormSetters {
-    setFormState: (state: Record<string, unknown>) => void;
+export interface FormSetters<F = Record<string, unknown>> {
+    setFormState: (state: F) => void;
 }
 
 export default function Manager<T extends { id: number }, F = Record<string, unknown>>({ config }: { config: ManagerConfig<T, F> }) {
@@ -44,12 +44,12 @@ export default function Manager<T extends { id: number }, F = Record<string, unk
 
     const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
 
-    const authHeaders = {
+    const authHeaders = useMemo(() => ({
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
-    };
+    }), [token]);
 
-    async function fetchItems() {
+    const fetchItems = useCallback(async () => {
         try {
             const res = await fetch(`${API_URL}/${config.apiEndpoint}/`, { headers: authHeaders });
             if (!res.ok) throw new Error(`Failed to fetch ${config.entityNamePlural}`);
@@ -58,7 +58,7 @@ export default function Manager<T extends { id: number }, F = Record<string, unk
         } catch (err: unknown) {
             setError(err instanceof Error ? err.message : `Failed to fetch ${config.entityNamePlural}`);
         }
-    }
+    }, [config.apiEndpoint, config.entityNamePlural, authHeaders]);
 
     useEffect(() => {
         if (!token) {
@@ -73,18 +73,20 @@ export default function Manager<T extends { id: number }, F = Record<string, unk
             }
         };
         loadData().finally(() => setLoading(false));
+        // We track config.apiEndpoint and config.fetchDependencies via fetchItems' dependencies
+        // Including the entire config object would cause unnecessary re-renders
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [token]);
+    }, [token, fetchItems, config.fetchDependencies]);
 
     function resetForm() {
-        config.resetFormData({ setFormState: setFormState as (state: Record<string, unknown>) => void });
+        config.resetFormData({ setFormState });
         setEditing(null);
         setShowForm(false);
     }
 
     function handleEdit(item: T) {
         setEditing(item);
-        config.setFormData(item, { setFormState: setFormState as (state: Record<string, unknown>) => void });
+        config.setFormData(item, { setFormState });
         setShowForm(true);
     }
 
