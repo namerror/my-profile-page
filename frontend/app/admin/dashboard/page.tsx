@@ -1,17 +1,31 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import ProjectManager from './ProjectManager';
-import SkillManager from './SkillManager';
-import LearningManager from './LearningManager';
-import CategoryManager from './CategoryManager';
-import ActivityManager from './ActivityManager';
+import Manager from './Manager';
+import {
+  categoryConfig,
+  createSkillConfig,
+  createProjectConfig,
+  createLearningConfig,
+  createActivityConfig,
+  useSkillsData,
+  useCategoriesData,
+} from './managerConfigs';
 
 export default function AdminDashboard() {
   const router = useRouter();
   const [ok, setOk] = useState(false);
   const [activeTab, setActiveTab] = useState<'projects' | 'skills' | 'learnings' | 'categories' | 'activities'>('projects');
+
+  const { skills, fetchSkills } = useSkillsData();
+  const { categories, fetchCategories } = useCategoriesData();
+
+  // Memoize configs to prevent unnecessary re-renders
+  const projectConfig = useMemo(() => createProjectConfig(skills), [skills]);
+  const skillConfig = useMemo(() => createSkillConfig(skills, categories), [skills, categories]);
+  const learningConfig = useMemo(() => createLearningConfig(skills), [skills]);
+  const activityConfig = useMemo(() => createActivityConfig(skills), [skills]);
 
   useEffect(() => {
     const token = localStorage.getItem('admin_token');
@@ -20,7 +34,9 @@ export default function AdminDashboard() {
       return;
     }
     setOk(true);
-  }, [router]);
+    fetchSkills();
+    fetchCategories();
+  }, [router, fetchSkills, fetchCategories]);
 
   if (!ok) return <div className="p-8">Checking authentication...</div>;
 
@@ -98,11 +114,11 @@ export default function AdminDashboard() {
 
 
       {/* Tab Content */}
-      {activeTab === 'projects' && <ProjectManager />}
-      {activeTab === 'skills' && <SkillManager />}
-      {activeTab === 'learnings' && <LearningManager />}
-      {activeTab === 'categories' && <CategoryManager />}
-      {activeTab === 'activities' && <ActivityManager />}
+      {activeTab === 'projects' && <Manager config={projectConfig} />}
+      {activeTab === 'skills' && <Manager config={skillConfig} />}
+      {activeTab === 'learnings' && <Manager config={learningConfig} />}
+      {activeTab === 'categories' && <Manager config={categoryConfig} />}
+      {activeTab === 'activities' && <Manager config={activityConfig} />}
     </main>
   );
 }
