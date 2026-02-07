@@ -15,6 +15,7 @@ export interface ManagerConfig<T, F = Record<string, unknown>> {
     setFormData: (item: T, setters: FormSetters<F>) => void;
     resetFormData: (setters: FormSetters<F>) => void;
     getInitialFormState: () => F;
+    isSingleton?: boolean; // If true, treats API as singleton (returns single object, not array)
 }
 
 export interface FormRenderProps<T, F = Record<string, unknown>> {
@@ -52,13 +53,21 @@ export default function Manager<T extends { id: number }, F = Record<string, unk
     const fetchItems = useCallback(async () => {
         try {
             const res = await fetch(`${API_URL}/${config.apiEndpoint}/`, { headers: authHeaders });
-            if (!res.ok) throw new Error(`Failed to fetch ${config.entityNamePlural}`);
+            if (!res.ok) {
+                // For singleton, 404 means no item yet, treat as empty
+                if (config.isSingleton && res.status === 404) {
+                    setItems([]);
+                    return;
+                }
+                throw new Error(`Failed to fetch ${config.entityNamePlural}`);
+            }
             const data = await res.json();
-            setItems(data);
+            // For singleton, wrap single object in array
+            setItems(config.isSingleton ? [data] : data);
         } catch (err: unknown) {
             setError(err instanceof Error ? err.message : `Failed to fetch ${config.entityNamePlural}`);
         }
-    }, [config.apiEndpoint, config.entityNamePlural, authHeaders]);
+    }, [config.apiEndpoint, config.entityNamePlural, config.isSingleton, authHeaders]);
 
     useEffect(() => {
         if (!token) {
@@ -94,7 +103,8 @@ export default function Manager<T extends { id: number }, F = Record<string, unk
         const payload = config.getFormData(formState);
 
         try {
-            const url = editing 
+            // For singleton, PUT doesn't include ID in URL
+            const url = editing && !config.isSingleton
                 ? `${API_URL}/${config.apiEndpoint}/${editing.id}/` 
                 : `${API_URL}/${config.apiEndpoint}/`;
             const method = editing ? 'PUT' : 'POST';

@@ -3,13 +3,13 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import Manager from './Manager';
-import UserProfileManager from './UserProfileManager';
 import {
   categoryConfig,
   createSkillConfig,
   createProjectConfig,
   createLearningConfig,
   createActivityConfig,
+  userConfig,
   useSkillsData,
   useCategoriesData,
 } from './managerConfigs';
@@ -131,7 +131,7 @@ export default function AdminDashboard() {
       {activeTab === 'learnings' && <Manager config={learningConfig} />}
       {activeTab === 'categories' && <Manager config={categoryConfig} />}
       {activeTab === 'activities' && <Manager config={activityConfig} />}
-      {activeTab === 'user' && <UserProfileManager />}
+      {activeTab === 'user' && <Manager config={userConfig} />}
     </main>
   );
 }
