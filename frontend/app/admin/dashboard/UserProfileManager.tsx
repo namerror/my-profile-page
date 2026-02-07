@@ -324,7 +324,7 @@ export default function UserProfileManager() {
             )}
 
             {!editing && !user && (
-                <p className="text-gray-500">No user profile yet. Click "Create Profile" to get started.</p>
+                <p className="text-gray-500">No user profile yet. Click &quot;Create Profile&quot; to get started.</p>
             )}
         </div>
     );
