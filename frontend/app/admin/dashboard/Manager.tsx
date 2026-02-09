@@ -4,6 +4,8 @@ import { useEffect, useState, useMemo, useCallback } from 'react';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
+// T is the type of the entity being managed (e.g. Skill, Project, etc.)
+// F is the type of the form state (e.g. { name: string, description: string })
 export interface ManagerConfig<T, F = Record<string, unknown>> {
     entityName: string;
     entityNamePlural: string;

@@ -1,20 +1,20 @@
-# My Portfolio Page
+# Portfolio Website Generator
 
-A modern, full-stack portfolio website built with Next.js and FastAPI, designed to showcase your projects, skills, learning journey, and professional activities. This application features a beautiful, animated frontend with a powerful admin panel for content management.
+A modern, full-stack portfolio website generator built with Next.js and FastAPI, designed to showcase your projects, skills, learning journey, and professional activities. This application features a beautiful, animated frontend with a powerful admin panel for content management. AI-assisted features are planned for future releases.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## ✨ Features
+## Features
 
-- 🎨 **Modern UI**: Beautiful, responsive design with smooth animations using Framer Motion
-- 📝 **Content Management**: Full-featured admin panel to manage your portfolio content
-- 🔒 **Secure Backend**: FastAPI-powered REST API with authentication
-- 💾 **Database-Backed**: PostgreSQL database with Alembic migrations
-- 🚀 **Easy Deployment**: Ready for deployment on Vercel (frontend) and other platforms (backend)
-- 📱 **Fully Responsive**: Optimized for mobile, tablet, and desktop viewing
-- 🎯 **Dynamic Content**: Projects, skills, learning resources, and activities sections
+- **Modern UI**: Beautiful, responsive design with smooth animations using Framer Motion
+- **Content Management**: Full-featured admin panel to manage your portfolio content
+- **Secure Backend**: FastAPI-powered REST API with authentication
+- **Database-Backed**: PostgreSQL database with Alembic migrations
+- **Easy Deployment**: Ready for deployment on Vercel (frontend) and other platforms (backend)
+- **Fully Responsive**: Optimized for mobile, tablet, and desktop viewing
+- **Dynamic Content**: Projects, skills, learning resources, and activities sections
 
-## 🏗️ Architecture
+## Architecture
 
 This project follows a monorepo structure with separate frontend and backend applications:
 
@@ -115,7 +115,14 @@ SECRET_KEY=your-secret-key-here  # Generate with: openssl rand -hex 32
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=30
 
-# [PLACEHOLDER: Add any other backend environment variables]
+# Admin Credentials
+ADMIN_USERNAME=admin-username
+ADMIN_PASSWORD=your-secure-password
+
+# Contact Form Email Settings
+EMAIL_USER=youremail@xxx.com # create app using Gmail
+EMAIL_PASSWORD=your-email-password # Use app password if using Gmail
+MY_EMAIL=destinationemail@xxx.com
 ```
 
 #### Frontend Configuration
@@ -172,7 +179,7 @@ This repository is designed to be easily customizable for your own portfolio. Fo
    alembic upgrade head
    ```
 
-5. **Add Your Content**: Use the admin panel to add:
+5. **Add Your Content**: Use the admin panel (see below "**Admin Panel**") to add:
    - Skills and skill categories
    - Projects (ongoing and completed)
    - Learning resources
@@ -187,11 +194,19 @@ This repository is designed to be easily customizable for your own portfolio. Fo
 
 ### Admin Panel
 
-[PLACEHOLDER: Add details about accessing and using the admin panel, including:
-- Default admin credentials or how to create an admin user
-- Admin panel URL
-- Features available in the admin panel
-- How to manage different content types]
+PLACEHOLDER: Add details about accessing and using the admin panel, including:
+- Create admin credentials in backend/.env (see "**Backend Configuration**" above):
+   ```env
+   ADMIN_USERNAME=admin
+   ADMIN_PASSWORD=your-secure-password
+   ```
+- Access the admin panel at `http://localhost:3000/admin/dashboard` when running locally, or `https://your-domain.com/admin/dashboard` in production.
+- Features available in the admin panel:
+  - Add, edit, delete projects
+  - Manage skills and categories
+  - Track learning resources
+  - Document activities
+  - ...and more!
 
 ### Content Management
 
@@ -279,13 +294,17 @@ vercel
 
 The backend can be deployed to various platforms. Here are some options:
 
-#### Option 1: [PLACEHOLDER - Add specific deployment platform, e.g., Railway, Render, AWS, etc.]
+#### Option 1 [Recommended]: Vercel
 
-[PLACEHOLDER: Add step-by-step deployment instructions for the backend]
+1. Push your code to GitHub
+2. Import your repository in [Vercel](https://vercel.com)
+3. Default build command already included in vercel.json
+4. Configure environment variables in Vercel dashboard (same as in your local `.env`)
+5. Deploy!
 
 #### Option 2: Docker
 
-[PLACEHOLDER: Add Docker deployment instructions if Docker files are available]
+[PLACEHOLDER]
 
 #### Database Setup
 
@@ -337,7 +356,7 @@ backend/
 └── requirements.txt        # Python dependencies
 ```
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Here's how you can help:
 
@@ -345,9 +364,7 @@ Contributions are welcome! Here's how you can help:
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Commit your changes (`git commit -m 'Add some amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-[PLACEHOLDER: Add any specific contribution guidelines, code style requirements, or review process]
+5. Open a Pull Request to the `development` branch
 
 ## 📝 License
 
@@ -355,34 +372,21 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 Copyright (c) 2025 Leon Long
 
-## 🙏 Acknowledgments
-
-- Next.js team for the amazing framework
-- FastAPI team for the excellent Python framework
-- All contributors and users of this project
-
 ## 📞 Contact & Support
 
 - **Author**: Leon Long
 - **LinkedIn**: [Leon Long](https://www.linkedin.com/in/leon-long-89a595317/)
 - **GitHub**: [@namerror](https://github.com/namerror/)
 
-[PLACEHOLDER: Add information about:
-- How to get support
-- Where to report bugs
-- Community channels (Discord, Slack, etc.)
-- FAQ section if needed]
-
 ## 🗺️ Roadmap
 
-[PLACEHOLDER: Add future features and improvements planned for this project, such as:
-- Blog functionality
-- Dark mode support
+Future features and improvements planned for this project:
+- Blog integration
+- AI-powered skill demonstrations
+- AI resume generation based on profile data
 - Multi-language support
-- Analytics integration
-- Additional admin features
-- etc.]
+- Customizable theme options
 
 ---
 
-**Happy Coding!** 🚀 If you find this project useful, please consider giving it a ⭐ on GitHub!
+**Happy Coding!** If you find this project useful, please consider giving it a ⭐ on GitHub!
