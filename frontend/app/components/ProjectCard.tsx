@@ -27,7 +27,7 @@ export default function ProjectCard({
             {is_completed ? "Completed" : "On-going"}
           </span>
 
-          <div className="flex flex-wrap gap-2 mt-2 overflow-hidden max-h-[60px]">
+          <div className="flex flex-wrap gap-2 mt-2 overflow-hidden max-h-[60px] relative">
             {skills.map((skill, index) => (
               <span
                 key={index}
@@ -36,6 +36,8 @@ export default function ProjectCard({
                 {skill.name}
               </span>
             ))}
+            {/* Gradient overlay to indicate overflow */}
+            <div className="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-[#212121] to-transparent pointer-events-none" />
           </div>
         </div>
       </div>
