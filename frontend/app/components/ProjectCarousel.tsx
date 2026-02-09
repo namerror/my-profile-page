@@ -91,7 +91,7 @@ export default function ProjectCarousel({ projects, autoplayInterval = 5000 }: P
             animate="center"
             exit="exit"
             transition={{ duration: 0.25 }}
-            className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+            className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 min-h-[400px] xs:min-h-[320px] sm:min-h-[295px] lg:min-h-[270px]"
           >
             {visibleProjects.map((project, idx) => (
               <ProjectCard key={idx} {...project} />

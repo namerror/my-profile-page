@@ -14,7 +14,7 @@ export default function ProjectCard({
 
   return (
     <Link href={`/projects/${id}`}>
-      <div className="bg-[#212121] hover:bg-[#353535] rounded-2xl shadow hover:shadow-lg transition p-5 flex flex-col justify-between cursor-pointer h-full min-h-[380px] xs:min-h-[300px] sm:min-h-[275px] lg:min-h-[250px]">
+      <div className="bg-[#212121] hover:bg-[#353535] rounded-2xl shadow hover:shadow-lg transition p-5 flex flex-col justify-between cursor-pointer h-[380px] xs:h-[300px] sm:h-[275px] lg:h-[250px]">
         <div>
           <h3 className="text-lg font-bold mb-2 gradient-white">{name}</h3>
           <p className="text-sm mb-3 line-clamp-7 gradient-white sm:line-clamp-5">{description}</p>
@@ -27,7 +27,7 @@ export default function ProjectCard({
             {is_completed ? "Completed" : "On-going"}
           </span>
 
-          <div className="flex flex-wrap gap-2 mt-2">
+          <div className="flex flex-wrap gap-2 mt-2 overflow-hidden max-h-[60px]">
             {skills.map((skill, index) => (
               <span
                 key={index}
