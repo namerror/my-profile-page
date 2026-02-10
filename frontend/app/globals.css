@@ -72,8 +72,8 @@
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: #fffefe;
+  color: #131313;
   font-family: Arial, Helvetica, sans-serif;
 }
 
