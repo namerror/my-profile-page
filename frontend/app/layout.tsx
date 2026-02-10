@@ -20,7 +20,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" style={{ colorScheme: 'light' }}>
+      <head>
+        <meta name="color-scheme" content="light" />
+      </head>
       <body className="min-h-screen bg-gray-50 text-gray-900">
         <Navbar />
         <MomentumScroll>
