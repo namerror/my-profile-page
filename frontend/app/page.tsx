@@ -173,15 +173,15 @@ export default async function HomePage() {
         />
         <div className="absolute inset-0 bg-black/80" />
         <section className="relative z-10">
-          <h2 className="text-3xl font-bold mb-8 gradient-gray text-center">Projects</h2>
+          <h2 className="text-3xl font-bold mb-8 text-[#fafafa] text-center">Projects</h2>
 
           <div className="mb-12">
-            <h3 className="text-xl font-semibold mb-4 gradient-gray pb-2 text-center">Ongoing</h3>
+            <h3 className="text-xl font-semibold mb-4 text-[#fafafa] pb-2 text-center">Ongoing</h3>
             <ProjectCarousel projects={ongoingProjects} />
           </div>
 
           <div>
-            <h3 className="text-xl font-semibold mb-4 gradient-gray pb-2 text-center">Completed</h3>
+            <h3 className="text-xl font-semibold mb-4 text-[#fafafa] pb-2 text-center">Completed</h3>
             <ProjectCarousel projects={completedProjects}/>
           </div>
         </section>
