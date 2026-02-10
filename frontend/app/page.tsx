@@ -40,6 +40,16 @@ interface ActivityBase {
   is_current: boolean;
 }
 
+interface UserBase {
+  name: string;
+  email: string;
+  phone_number: string | null;
+  linkedin_url: string | null;
+  github_url: string | null;
+  personal_website: string | null;
+  description: string | null;
+}
+
 export type SkillRead = SkillBase & {
   id: number;
 }
@@ -71,6 +81,10 @@ export type CategoryRead = CategoryBase & {
 export type ActivityRead = ActivityBase & {
     id: number;
     skills: SkillRead[];
+}
+
+export type UserRead = UserBase & {
+  id: number;
 }
 
 

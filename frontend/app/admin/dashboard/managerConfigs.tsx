@@ -1,5 +1,5 @@
 import { ManagerConfig } from './Manager';
-import { ActivityRead, CategoryRead, LearningRead, ProjectRead, SkillRead } from '@/app/page';
+import { ActivityRead, CategoryRead, LearningRead, ProjectRead, SkillRead, UserRead } from '@/app/page';
 import { useState, useCallback } from 'react';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
@@ -40,6 +40,16 @@ interface ActivityFormState {
     endDate: string;
     isCurrent: boolean;
     selectedSkills: number[];
+}
+
+interface UserFormState {
+    name: string;
+    email: string;
+    phoneNumber: string;
+    linkedinUrl: string;
+    githubUrl: string;
+    personalWebsite: string;
+    description: string;
 }
 
 // Category Manager Config
@@ -848,3 +858,203 @@ export function createActivityConfig(skills: SkillRead[]): ManagerConfig<Activit
         ),
     };
 }
+
+// User Profile Manager Config
+export const userConfig: ManagerConfig<UserRead, UserFormState> = {
+    entityName: 'User Profile',
+    entityNamePlural: 'User Profile',
+    apiEndpoint: 'user',
+    isSingleton: true,
+    getInitialFormState: () => ({
+        name: '',
+        email: '',
+        phoneNumber: '',
+        linkedinUrl: '',
+        githubUrl: '',
+        personalWebsite: '',
+        description: '',
+    }),
+    resetFormData: ({ setFormState }) => {
+        setFormState({
+            name: '',
+            email: '',
+            phoneNumber: '',
+            linkedinUrl: '',
+            githubUrl: '',
+            personalWebsite: '',
+            description: '',
+        });
+    },
+    setFormData: (item, { setFormState }) => {
+        setFormState({
+            name: item.name,
+            email: item.email,
+            phoneNumber: item.phone_number || '',
+            linkedinUrl: item.linkedin_url || '',
+            githubUrl: item.github_url || '',
+            personalWebsite: item.personal_website || '',
+            description: item.description || '',
+        });
+    },
+    getFormData: (formState) => ({
+        name: formState.name,
+        email: formState.email,
+        phone_number: formState.phoneNumber || null,
+        linkedin_url: formState.linkedinUrl || null,
+        github_url: formState.githubUrl || null,
+        personal_website: formState.personalWebsite || null,
+        description: formState.description || null,
+    }),
+    renderForm: ({ formState, setFormState }) => (
+        <>
+            <div className="mb-3">
+                <label className="block text-sm font-medium mb-1">
+                    Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                    value={formState.name}
+                    onChange={(e) => setFormState({ ...formState, name: e.target.value })}
+                    className="w-full border p-2 rounded"
+                    required
+                />
+            </div>
+
+            <div className="mb-3">
+                <label className="block text-sm font-medium mb-1">
+                    Email <span className="text-red-500">*</span>
+                </label>
+                <input
+                    type="email"
+                    value={formState.email}
+                    onChange={(e) => setFormState({ ...formState, email: e.target.value })}
+                    className="w-full border p-2 rounded"
+                    required
+                />
+            </div>
+
+            <div className="mb-3">
+                <label className="block text-sm font-medium mb-1">Description</label>
+                <textarea
+                    value={formState.description}
+                    onChange={(e) => setFormState({ ...formState, description: e.target.value })}
+                    className="w-full border p-2 rounded"
+                    rows={3}
+                    placeholder="Brief bio or description"
+                />
+            </div>
+
+            <div className="mb-3">
+                <label className="block text-sm font-medium mb-1">Phone Number</label>
+                <input
+                    type="tel"
+                    value={formState.phoneNumber}
+                    onChange={(e) => setFormState({ ...formState, phoneNumber: e.target.value })}
+                    className="w-full border p-2 rounded"
+                    placeholder="+1 (555) 123-4567"
+                />
+            </div>
+
+            <div className="mb-3">
+                <label className="block text-sm font-medium mb-1">GitHub URL</label>
+                <input
+                    type="url"
+                    value={formState.githubUrl}
+                    onChange={(e) => setFormState({ ...formState, githubUrl: e.target.value })}
+                    className="w-full border p-2 rounded"
+                    placeholder="https://github.com/username"
+                />
+            </div>
+
+            <div className="mb-3">
+                <label className="block text-sm font-medium mb-1">LinkedIn URL</label>
+                <input
+                    type="url"
+                    value={formState.linkedinUrl}
+                    onChange={(e) => setFormState({ ...formState, linkedinUrl: e.target.value })}
+                    className="w-full border p-2 rounded"
+                    placeholder="https://linkedin.com/in/username"
+                />
+            </div>
+
+            <div className="mb-3">
+                <label className="block text-sm font-medium mb-1">Personal Website</label>
+                <input
+                    type="url"
+                    value={formState.personalWebsite}
+                    onChange={(e) => setFormState({ ...formState, personalWebsite: e.target.value })}
+                    className="w-full border p-2 rounded"
+                    placeholder="https://yourwebsite.com"
+                />
+            </div>
+        </>
+    ),
+    renderListItem: ({ item, onEdit }) => (
+        <div className="p-4 border rounded bg-white">
+            <div className="flex justify-between items-start mb-2">
+                <div className="flex-1">
+                    <h3 className="text-lg font-semibold">{item.name}</h3>
+                    <p className="text-sm text-gray-600">{item.email}</p>
+                    {item.description && (
+                        <p className="text-sm text-gray-700 mt-2">{item.description}</p>
+                    )}
+                </div>
+                <div className="flex gap-2">
+                    <button
+                        onClick={() => onEdit(item)}
+                        className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
+                    >
+                        Edit
+                    </button>
+                </div>
+            </div>
+
+            <div className="mt-3 space-y-2">
+                {item.phone_number && (
+                    <div className="text-sm">
+                        <span className="font-medium text-gray-600">Phone:</span>{' '}
+                        <span className="text-gray-800">{item.phone_number}</span>
+                    </div>
+                )}
+                {item.github_url && (
+                    <div className="text-sm">
+                        <span className="font-medium text-gray-600">GitHub:</span>{' '}
+                        <a
+                            href={item.github_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-500 hover:underline"
+                        >
+                            {item.github_url}
+                        </a>
+                    </div>
+                )}
+                {item.linkedin_url && (
+                    <div className="text-sm">
+                        <span className="font-medium text-gray-600">LinkedIn:</span>{' '}
+                        <a
+                            href={item.linkedin_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-500 hover:underline"
+                        >
+                            {item.linkedin_url}
+                        </a>
+                    </div>
+                )}
+                {item.personal_website && (
+                    <div className="text-sm">
+                        <span className="font-medium text-gray-600">Website:</span>{' '}
+                        <a
+                            href={item.personal_website}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-500 hover:underline"
+                        >
+                            {item.personal_website}
+                        </a>
+                    </div>
+                )}
+            </div>
+        </div>
+    ),
+};

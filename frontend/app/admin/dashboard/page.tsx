@@ -9,6 +9,7 @@ import {
   createProjectConfig,
   createLearningConfig,
   createActivityConfig,
+  userConfig,
   useSkillsData,
   useCategoriesData,
 } from './managerConfigs';
@@ -16,7 +17,7 @@ import {
 export default function AdminDashboard() {
   const router = useRouter();
   const [ok, setOk] = useState(false);
-  const [activeTab, setActiveTab] = useState<'projects' | 'skills' | 'learnings' | 'categories' | 'activities'>('projects');
+  const [activeTab, setActiveTab] = useState<'projects' | 'skills' | 'learnings' | 'categories' | 'activities' | 'user'>('projects');
 
   const { skills, fetchSkills } = useSkillsData();
   const { categories, fetchCategories } = useCategoriesData();
@@ -109,6 +110,17 @@ export default function AdminDashboard() {
         >
           Activities
         </button>
+
+        <button
+          onClick={() => setActiveTab('user')}
+          className={`px-4 py-2 font-semibold ${
+            activeTab === 'user'
+              ? 'border-b-2 border-blue-600 text-blue-600'
+              : 'text-gray-600 hover:text-gray-900'
+          }`}
+        >
+          User Profile
+        </button>
       </div>
 
 
@@ -119,6 +131,7 @@ export default function AdminDashboard() {
       {activeTab === 'learnings' && <Manager config={learningConfig} />}
       {activeTab === 'categories' && <Manager config={categoryConfig} />}
       {activeTab === 'activities' && <Manager config={activityConfig} />}
+      {activeTab === 'user' && <Manager config={userConfig} />}
     </main>
   );
 }
