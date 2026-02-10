@@ -81,3 +81,29 @@ class ActivityRead(ActivityBase):
     skills: List[SkillRead] = []
     class Config:
         orm_mode = True
+
+class UserBase(BaseModel):
+    name: str
+    email: EmailStr
+    phone_number: Optional[str] = None
+    linkedin_url: Optional[str] = None
+    github_url: Optional[str] = None
+    personal_website: Optional[str] = None
+    description: Optional[str] = None
+
+class UserCreate(UserBase):
+    pass
+
+class UserUpdate(BaseModel):
+    name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    phone_number: Optional[str] = None
+    linkedin_url: Optional[str] = None
+    github_url: Optional[str] = None
+    personal_website: Optional[str] = None
+    description: Optional[str] = None
+
+class UserRead(UserBase):
+    id: int
+    class Config:
+        orm_mode = True

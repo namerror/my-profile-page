@@ -182,3 +182,41 @@ def delete_activity(db: Session, activity: models_db.Activity):
     db.delete(activity)
     db.commit()
     return
+
+# User profile CRUD operations
+def get_user(db: Session):
+    """Get the single user profile"""
+    return db.query(models_db.User).first()
+
+def create_user(db: Session, user_in: schemas.UserCreate):
+    """Create the user profile - only one allowed"""
+    existing = get_user(db)
+    if existing:
+        raise ValueError("User profile already exists. Only one profile is allowed.")
+    
+    user = models_db.User(
+        name=user_in.name,
+        email=user_in.email,
+        phone_number=user_in.phone_number,
+        linkedin_url=user_in.linkedin_url,
+        github_url=user_in.github_url,
+        personal_website=user_in.personal_website,
+        description=user_in.description
+    )
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user
+
+def update_user(db: Session, user: models_db.User, user_in: schemas.UserUpdate):
+    """Update the user profile"""
+    # Use exclude_unset=True to only update fields that were explicitly provided
+    update_data = user_in.model_dump(exclude_unset=True)
+    
+    for field, value in update_data.items():
+        setattr(user, field, value)
+    
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user
