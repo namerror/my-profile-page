@@ -158,11 +158,11 @@ export default function Manager<T extends { id: number }, F = Record<string, unk
 
             {error && <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">{error}</div>}
 
-            {/* Form */}
-            {showForm && (
+            {/* Form for creating new items (only show when not editing) */}
+            {showForm && !editing && (
                 <form onSubmit={handleSubmit} className="mb-6 p-4 border rounded bg-gray-50">
                     <h3 className="text-lg font-semibold mb-3">
-                        {editing ? `Edit ${config.entityName}` : `Create ${config.entityName}`}
+                        Create {config.entityName}
                     </h3>
 
                     {config.renderForm({ formState, setFormState, editing, error })}
@@ -172,7 +172,7 @@ export default function Manager<T extends { id: number }, F = Record<string, unk
                             type="submit"
                             className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
                         >
-                            {editing ? 'Update' : 'Create'}
+                            Create
                         </button>
                         <button
                             type="button"
@@ -197,6 +197,33 @@ export default function Manager<T extends { id: number }, F = Record<string, unk
                                 onEdit: handleEdit, 
                                 onDelete: handleDelete 
                             })}
+                            
+                            {/* Form for editing - appears under the item being edited */}
+                            {editing && editing.id === item.id && showForm && (
+                                <form onSubmit={handleSubmit} className="mt-3 p-4 border rounded bg-gray-50">
+                                    <h3 className="text-lg font-semibold mb-3">
+                                        Edit {config.entityName}
+                                    </h3>
+
+                                    {config.renderForm({ formState, setFormState, editing, error })}
+
+                                    <div className="flex gap-2">
+                                        <button
+                                            type="submit"
+                                            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                                        >
+                                            Update
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={resetForm}
+                                            className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </form>
+                            )}
                         </div>
                     ))
                 )}
