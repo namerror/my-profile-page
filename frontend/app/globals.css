@@ -46,8 +46,8 @@
 
 @layer components {
   .gradient-white {
-    background: linear-gradient(90deg, #eae6ff,#f4f4f4);
-    background: -webkit-linear-gradient(90deg, #eae6ff,#f4f4f4);
+    background: linear-gradient(90deg, #ffffff,#f0f0f0);
+    background: -webkit-linear-gradient(90deg, #ffffff,#f0f0f0);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
