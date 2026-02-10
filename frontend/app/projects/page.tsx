@@ -77,7 +77,7 @@ export default function ProjectsPage() {
 
             {/* Completed Projects */}
             <div className="rounded-xl bg-[#4a4a4a] p-6">
-              <h2 className="text-xl font-semibold mb-4 text-center gradient-white">Completed</h2>
+              <h2 className="text-xl font-semibold mb-4 text-center text-[#fafafa]">Completed</h2>
               <TabContent projects={completedProjects} />
             </div>
           </div>

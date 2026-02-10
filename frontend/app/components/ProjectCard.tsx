@@ -16,8 +16,8 @@ export default function ProjectCard({
     <Link href={`/projects/${id}`}>
       <div className="bg-[#212121] hover:bg-[#353535] rounded-2xl shadow hover:shadow-lg transition p-5 flex flex-col justify-between cursor-pointer h-full min-h-[380px] xs:min-h-[325px] sm:min-h-[325px] lg:min-h-[275px]">
         <div>
-          <h3 className="text-lg font-bold mb-2 gradient-white">{name}</h3>
-          <p className="text-sm mb-3 line-clamp-7 gradient-white sm:line-clamp-5">{description}</p>
+          <h3 className="text-lg font-bold mb-2 text-[#fafafa]">{name}</h3>
+          <p className="text-sm mb-3 line-clamp-7 text-[#fafafa] sm:line-clamp-5">{description}</p>
         </div>
 
         <div className="mt-auto space-y-2">

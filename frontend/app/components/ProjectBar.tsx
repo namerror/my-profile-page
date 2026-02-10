@@ -21,7 +21,7 @@ export default function ProjectBar({ project }: ProjectBarProps) {
 
                 <div className="relative z-10">
                     <div>
-                        <h3 className={`text-lg font-bold mb-2 ${project.is_completed ? "gradient-white" : "text-black"}`}>{project.name}</h3>
+                        <h3 className={`text-lg font-bold mb-2 ${project.is_completed ? "text-white" : "text-black"}`}>{project.name}</h3>
                         <p className={`text-sm mb-3 ${project.is_completed ? "text-white" : "text-black"}`}>{project.description}</p>
                     </div>
 
