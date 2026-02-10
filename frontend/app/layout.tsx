@@ -11,7 +11,10 @@ export const metadata: Metadata = {
     { rel: 'icon', type: 'image/png', sizes: '16x16', url: '/favicon_io/favicon-16x16.png' },
     { rel: 'apple-touch-icon', sizes: '180x180', url: '/favicon_io/apple-touch-icon.png' },
   ],
-  manifest: '/favicon_io/site.webmanifest'
+  manifest: '/favicon_io/site.webmanifest',
+  other: {
+    'color-scheme': 'light',
+  },
 };
 
 export default function RootLayout({
@@ -21,9 +24,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" style={{ colorScheme: 'light' }}>
-      <head>
-        <meta name="color-scheme" content="light" />
-      </head>
       <body className="min-h-screen bg-gray-50 text-gray-900">
         <Navbar />
         <MomentumScroll>
