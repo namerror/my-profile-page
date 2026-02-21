@@ -12,6 +12,7 @@ This repo is a monorepo with a Next.js frontend and a FastAPI backend. Use this 
 ## Common Commands
 - Frontend dev: `cd frontend && npm run dev`
 - Frontend lint: `cd frontend && npm run lint`
+- Activate backend venv: `source .venv/bin/activate`
 - Backend dev: `cd backend && uvicorn app.main:app --reload --host 0.0.0.0 --port 8000`
 - Backend generate migration files: `cd backend && alembic revision --autogenerate -m "migration message"`
 - Backend migrations: `cd backend && alembic upgrade head`

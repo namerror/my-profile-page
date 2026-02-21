@@ -7,6 +7,8 @@ This project is a reusable portfolio generator built as a monorepo with a Next.j
 - Admin dashboard: `frontend/app/admin/dashboard/page.tsx` (accessed at `/admin/dashboard`)
 - Backend models: `backend/app/models_db.py` (Project, Skill, Activity, Learning, User, etc.)
 - Backend API routes: `backend/app/api/` (one file per model)
+- Backend schemas: `backend/app/schemas.py` (Pydantic models for request/response validation)
+- Backend CRUD logic: `backend/app/crud.py`
 - Auth logic: `backend/app/api/auth.py`
 
 ## Roles And Access
