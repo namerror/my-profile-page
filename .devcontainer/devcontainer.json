@@ -1,0 +1,25 @@
+{
+    "name": "next-fastapi-dev",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "context": ".."
+    },
+    "forwardPorts": [3000, 8000],
+    "portsAttributes": {
+        "3000": {
+            "label": "Next.js"
+        },
+        "8000": {
+            "label": "FastAPI"
+        }
+    },
+    "postCreateCommand": "bash .devcontainer/postCreate.sh",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "ms-python.vscode-pylance"
+            ]
+        }
+    }
+}

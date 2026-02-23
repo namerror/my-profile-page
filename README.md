@@ -72,8 +72,8 @@ Before you begin, ensure you have the following installed:
    cd backend
    
    # Create a virtual environment
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   python -m venv .venv
+   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
    
    # Install dependencies
    pip install -r requirements.txt
@@ -94,8 +94,13 @@ Before you begin, ensure you have the following installed:
    npm install
    
    # Create a .env.local file (see Frontend Configuration below)
-   cp .env.example .env.local  # Edit this file with your settings
+   touch .env.local  # Edit this file with your settings
    ```
+
+### Alternative: Using Dev Containers and Docker
+   - Clone the repository
+   - Install [Docker](https://www.docker.com/) and [VS Code Dev Containers extension (ms-vscode-remote.remote-containers)](https://code.visualstudio.com/docs/remote/containers)
+   - Open the project in VS Code and click "Reopen in Container" when prompted
 
 ### Configuration
 
@@ -142,7 +147,7 @@ NEXT_PUBLIC_API_URL=http://localhost:8000
 
    ```bash
    cd backend
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
    uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
    ```
 
@@ -301,10 +306,6 @@ The backend can be deployed to various platforms. Here are some options:
 3. Default build command already included in vercel.json
 4. Configure environment variables in Vercel dashboard (same as in your local `.env`)
 5. Deploy!
-
-#### Option 2: Docker
-
-[PLACEHOLDER]
 
 #### Database Setup
 
