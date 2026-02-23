@@ -59,7 +59,7 @@ export default function AdminDashboard() {
   };
 
   return (
-    <main className="h-screen w-full overflow-hidden bg-slate-50 text-slate-900 flex flex-col">
+    <main className="min-h-screen w-full bg-slate-50 text-slate-900 flex flex-col">
       {/* Mobile top bar */}
       <div className="md:hidden flex-shrink-0 flex items-center justify-between border-b border-slate-200 bg-white/90 px-4 py-3 backdrop-blur z-30">
         <button
@@ -120,7 +120,7 @@ export default function AdminDashboard() {
       )}
 
       {/* Body: sidebar + content */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1">
         {/* Desktop sidebar */}
         <aside className="hidden md:flex md:w-64 md:flex-shrink-0 md:flex-col md:border-r md:border-slate-200 md:bg-white overflow-y-auto">
           <div className="border-b border-slate-200 px-6 py-6">
@@ -153,7 +153,7 @@ export default function AdminDashboard() {
         </aside>
 
         {/* Main content with its own scrollbar */}
-        <div className="flex-1 overflow-y-auto min-w-0 px-4 pb-10 pt-6 md:px-10">
+        <div className="flex-1 min-w-0 px-4 pb-10 pt-6 md:px-10">
           <div className="mb-6 hidden min-w-0 items-center justify-between md:flex">
             <div className="min-w-0">
               <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Admin</p>
