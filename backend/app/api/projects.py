@@ -1,12 +1,20 @@
 ''' API endpoints for managing projects '''
 
-from fastapi import APIRouter, Depends, HTTPException
+import os
+import uuid
+import httpx
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from sqlalchemy.orm import Session
 from typing import List
 
 from ..db.session import get_db
 from .. import crud, schemas, models_db
 from .auth import get_current_admin
+
+BLOB_TOKEN = os.getenv("BLOB_READ_WRITE_TOKEN", "")
+BLOB_API_URL = "https://blob.vercel-storage.com"
+ALLOWED_IMAGE_TYPES = {"image/jpeg", "image/png", "image/gif", "image/webp"}
+MAX_IMAGE_SIZE = 5 * 1024 * 1024  # 5 MB
 
 router = APIRouter(prefix="/projects", tags=["projects"])
 
@@ -37,5 +45,63 @@ def delete_project(project_id: int, db: Session = Depends(get_db), admin: str = 
     p = crud.get_project(db, project_id)
     if not p:
         raise HTTPException(status_code=404, detail="Project not found")
+    if p.image_url:
+        _delete_blob(p.image_url)
     crud.delete_project(db, p)
     return
+
+@router.post("/{project_id}/image", response_model=schemas.ProjectRead)
+def upload_project_image(
+    project_id: int,
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    admin: str = Depends(get_current_admin),
+):
+    p = crud.get_project(db, project_id)
+    if not p:
+        raise HTTPException(status_code=404, detail="Project not found")
+    if file.content_type not in ALLOWED_IMAGE_TYPES:
+        raise HTTPException(status_code=400, detail="Unsupported image type. Use JPEG, PNG, GIF, or WebP.")
+    contents = file.file.read()
+    if len(contents) > MAX_IMAGE_SIZE:
+        raise HTTPException(status_code=400, detail="Image too large. Max size is 5 MB.")
+    # Remove old image if present
+    if p.image_url:
+        _delete_blob(p.image_url)
+    ext = (file.filename or "image").rsplit(".", 1)[-1].lower()
+    filename = f"project_{project_id}_{uuid.uuid4().hex[:8]}.{ext}"
+    res = httpx.put(
+        f"{BLOB_API_URL}/{filename}",
+        content=contents,
+        headers={
+            "Authorization": f"Bearer {BLOB_TOKEN}",
+            "Content-Type": file.content_type or "application/octet-stream",
+            "x-api-version": "7",
+        },
+        params={"access": "public"},
+    )
+    if not res.is_success:
+        raise HTTPException(status_code=502, detail="Failed to upload image to storage")
+    blob_url = res.json()["url"]
+    return crud.set_project_image(db, p, blob_url)
+
+@router.delete("/{project_id}/image", response_model=schemas.ProjectRead)
+def delete_project_image(
+    project_id: int,
+    db: Session = Depends(get_db),
+    admin: str = Depends(get_current_admin),
+):
+    p = crud.get_project(db, project_id)
+    if not p:
+        raise HTTPException(status_code=404, detail="Project not found")
+    if not p.image_url:
+        raise HTTPException(status_code=404, detail="Project has no image")
+    _delete_blob(p.image_url)
+    return crud.clear_project_image(db, p)
+
+def _delete_blob(url: str) -> None:
+    httpx.delete(
+        BLOB_API_URL,
+        headers={"Authorization": f"Bearer {BLOB_TOKEN}"},
+        json={"urls": [url]},
+    )
