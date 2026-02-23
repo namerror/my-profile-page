@@ -25,6 +25,7 @@ This repo is a monorepo with a Next.js frontend and a FastAPI backend. Use this 
 
 ## Conventions
 - Prefer minimal, targeted edits.
+- Frontend changes should be in `frontend/app/` and follow existing patterns, only make necessary changes in css styles.
 - Keep diffs small and avoid large refactors without asking.
 - Match existing patterns in each app.
 - Ask for clarification if unsure about any aspect of the codebase or requirements before making changes.
