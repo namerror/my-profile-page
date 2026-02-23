@@ -2,6 +2,7 @@
 
 import os
 import uuid
+import httpx
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from sqlalchemy.orm import Session
 from typing import List
@@ -10,7 +11,8 @@ from ..db.session import get_db
 from .. import crud, schemas, models_db
 from .auth import get_current_admin
 
-UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "uploads")
+BLOB_TOKEN = os.getenv("BLOB_READ_WRITE_TOKEN", "")
+BLOB_API_URL = "https://blob.vercel-storage.com"
 ALLOWED_IMAGE_TYPES = {"image/jpeg", "image/png", "image/gif", "image/webp"}
 MAX_IMAGE_SIZE = 5 * 1024 * 1024  # 5 MB
 
@@ -44,7 +46,7 @@ def delete_project(project_id: int, db: Session = Depends(get_db), admin: str = 
     if not p:
         raise HTTPException(status_code=404, detail="Project not found")
     if p.image_url:
-        _delete_image_file(p.image_url)
+        _delete_blob(p.image_url)
     crud.delete_project(db, p)
     return
 
@@ -65,15 +67,23 @@ def upload_project_image(
         raise HTTPException(status_code=400, detail="Image too large. Max size is 5 MB.")
     # Remove old image if present
     if p.image_url:
-        _delete_image_file(p.image_url)
+        _delete_blob(p.image_url)
     ext = (file.filename or "image").rsplit(".", 1)[-1].lower()
     filename = f"project_{project_id}_{uuid.uuid4().hex[:8]}.{ext}"
-    os.makedirs(UPLOAD_DIR, exist_ok=True)
-    filepath = os.path.join(UPLOAD_DIR, filename)
-    with open(filepath, "wb") as f:
-        f.write(contents)
-    image_url = f"/uploads/{filename}"
-    return crud.set_project_image(db, p, image_url)
+    res = httpx.put(
+        f"{BLOB_API_URL}/{filename}",
+        content=contents,
+        headers={
+            "Authorization": f"Bearer {BLOB_TOKEN}",
+            "Content-Type": file.content_type or "application/octet-stream",
+            "x-api-version": "7",
+        },
+        params={"access": "public"},
+    )
+    if not res.is_success:
+        raise HTTPException(status_code=502, detail="Failed to upload image to storage")
+    blob_url = res.json()["url"]
+    return crud.set_project_image(db, p, blob_url)
 
 @router.delete("/{project_id}/image", response_model=schemas.ProjectRead)
 def delete_project_image(
@@ -86,13 +96,12 @@ def delete_project_image(
         raise HTTPException(status_code=404, detail="Project not found")
     if not p.image_url:
         raise HTTPException(status_code=404, detail="Project has no image")
-    _delete_image_file(p.image_url)
+    _delete_blob(p.image_url)
     return crud.clear_project_image(db, p)
 
-def _delete_image_file(image_url: str):
-    # image_url is stored as /uploads/<filename>
-    prefix = "/uploads/"
-    filename = image_url[len(prefix):] if image_url.startswith(prefix) else os.path.basename(image_url)
-    filepath = os.path.join(UPLOAD_DIR, filename)
-    if os.path.isfile(filepath):
-        os.remove(filepath)
+def _delete_blob(url: str) -> None:
+    httpx.delete(
+        BLOB_API_URL,
+        headers={"Authorization": f"Bearer {BLOB_TOKEN}"},
+        json={"urls": [url]},
+    )
