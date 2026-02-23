@@ -12,7 +12,7 @@ import {
   userConfig,
   useSkillsData,
   useCategoriesData,
-} from './managerConfigs';
+} from './managers';
 
 export default function AdminDashboard() {
   const router = useRouter();
