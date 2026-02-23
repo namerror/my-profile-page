@@ -439,7 +439,7 @@ export function createProjectConfig(skills: SkillRead[]): ManagerConfig<ProjectR
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2 text-sm">
+                <div className="flex flex-wrap items-center gap-2 text-sm">
                     <span
                         className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
                             item.is_completed
@@ -450,7 +450,7 @@ export function createProjectConfig(skills: SkillRead[]): ManagerConfig<ProjectR
                         {item.is_completed ? 'Completed' : 'Ongoing'}
                     </span>
                     {item.skills.length > 0 && (
-                        <div className="flex gap-1">
+                        <div className="flex flex-wrap gap-1">
                             {item.skills.map((skill) => (
                                 <span
                                     key={skill.id}
@@ -616,7 +616,7 @@ export function createLearningConfig(skills: SkillRead[]): ManagerConfig<Learnin
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2 text-sm">
+                <div className="flex flex-wrap items-center gap-2 text-sm">
                     <span
                         className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
                             item.is_completed
@@ -627,7 +627,7 @@ export function createLearningConfig(skills: SkillRead[]): ManagerConfig<Learnin
                         {item.is_completed ? 'Completed' : 'In Progress'}
                     </span>
                     {item.skills.length > 0 && (
-                        <div className="flex gap-1">
+                        <div className="flex flex-wrap gap-1">
                             {item.skills.map((skill) => (
                                 <span
                                     key={skill.id}
