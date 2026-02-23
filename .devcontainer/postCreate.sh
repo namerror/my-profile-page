@@ -17,4 +17,8 @@ echo "Setting up frontend..."
 cd "../$FRONTEND_DIR"
 npm ci || npm install
 
+echo "Installing coding agents..."
+curl -fsSL https://claude.ai/install.sh | bash
+sudo npm i -g @openai/codex
+
 echo "Done."
