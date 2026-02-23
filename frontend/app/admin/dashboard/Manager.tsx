@@ -38,6 +38,11 @@ export interface FormSetters<F = Record<string, unknown>> {
 }
 
 export default function Manager<T extends { id: number }, F = Record<string, unknown>>({ config }: { config: ManagerConfig<T, F> }) {
+    const headerButtonClass = "inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800";
+    const primaryButtonClass = "inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700";
+    const secondaryButtonClass = "inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50";
+    const dangerButtonClass = "inline-flex items-center gap-2 rounded-lg border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-semibold text-rose-700 shadow-sm transition hover:bg-rose-100";
+
     const [items, setItems] = useState<T[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -142,42 +147,64 @@ export default function Manager<T extends { id: number }, F = Record<string, unk
         }
     }
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) {
+        return (
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <p className="text-sm text-slate-500">Loading {config.entityNamePlural}...</p>
+            </div>
+        );
+    }
 
     return (
-        <div>
-            <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-bold">{config.entityNamePlural}</h2>
+        <section className="w-full min-w-0 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                <div>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                        Manager
+                    </p>
+                    <h2 className="text-2xl font-semibold text-slate-900">
+                        {config.entityNamePlural}
+                    </h2>
+                </div>
                 <button
                     onClick={() => setShowForm(!showForm)}
-                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                    className={headerButtonClass}
                 >
-                    {showForm ? 'Cancel' : `+ New ${config.entityName}`}
+                    {showForm ? 'Close form' : `+ New ${config.entityName}`}
                 </button>
             </div>
 
-            {error && <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">{error}</div>}
+            {error && (
+                <div className="mt-4 rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">
+                    {error}
+                </div>
+            )}
 
             {/* Form for creating new items (only show when not editing) */}
             {showForm && !editing && (
-                <form onSubmit={handleSubmit} className="mb-6 p-4 border rounded bg-gray-50">
-                    <h3 className="text-lg font-semibold mb-3">
-                        Create {config.entityName}
-                    </h3>
+                <form onSubmit={handleSubmit} className="mt-5 rounded-xl border border-slate-200 bg-slate-50 p-5">
+                    <div className="mb-4">
+                        <h3 className="text-lg font-semibold text-slate-900">
+                            Create {config.entityName}
+                        </h3>
+                        <p className="text-sm text-slate-500">
+                            Fill out the details below and save when you are ready.
+                        </p>
+                    </div>
 
                     {config.renderForm({ formState, setFormState, editing, error })}
 
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2 pt-2">
                         <button
                             type="submit"
-                            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                            className={primaryButtonClass}
                         >
                             Create
                         </button>
                         <button
                             type="button"
                             onClick={resetForm}
-                            className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                            className={secondaryButtonClass}
                         >
                             Cancel
                         </button>
@@ -186,9 +213,11 @@ export default function Manager<T extends { id: number }, F = Record<string, unk
             )}
 
             {/* List */}
-            <div className="space-y-3">
+            <div className="mt-6 min-w-0 space-y-4">
                 {items.length === 0 ? (
-                    <p className="text-gray-500">No {config.entityNamePlural} yet.</p>
+                    <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 p-6 text-sm text-slate-500">
+                        No {config.entityNamePlural} yet. Create one to get started.
+                    </div>
                 ) : (
                     items.map((item) => (
                         <div key={item.id}>
@@ -200,24 +229,29 @@ export default function Manager<T extends { id: number }, F = Record<string, unk
                             
                             {/* Form for editing - appears under the item being edited */}
                             {editing && editing.id === item.id && showForm && (
-                                <form onSubmit={handleSubmit} className="mt-3 p-4 border rounded bg-gray-50">
-                                    <h3 className="text-lg font-semibold mb-3">
-                                        Edit {config.entityName}
-                                    </h3>
+                                <form onSubmit={handleSubmit} className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-5">
+                                    <div className="mb-4">
+                                        <h3 className="text-lg font-semibold text-slate-900">
+                                            Edit {config.entityName}
+                                        </h3>
+                                        <p className="text-sm text-slate-500">
+                                            Update the fields below, then save your changes.
+                                        </p>
+                                    </div>
 
                                     {config.renderForm({ formState, setFormState, editing, error })}
 
-                                    <div className="flex gap-2">
+                                    <div className="flex flex-wrap gap-2 pt-2">
                                         <button
                                             type="submit"
-                                            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                                            className={primaryButtonClass}
                                         >
                                             Update
                                         </button>
                                         <button
                                             type="button"
                                             onClick={resetForm}
-                                            className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                                            className={dangerButtonClass}
                                         >
                                             Cancel
                                         </button>
@@ -228,6 +262,6 @@ export default function Manager<T extends { id: number }, F = Record<string, unk
                     ))
                 )}
             </div>
-        </div>
+        </section>
     );
 }
