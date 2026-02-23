@@ -78,6 +78,20 @@ def delete_project(db: Session, project: models_db.Project):
     db.commit()
     return
 
+def set_project_image(db: Session, project: models_db.Project, image_url: str):
+    project.image_url = image_url
+    db.add(project)
+    db.commit()
+    db.refresh(project)
+    return project
+
+def clear_project_image(db: Session, project: models_db.Project):
+    project.image_url = None
+    db.add(project)
+    db.commit()
+    db.refresh(project)
+    return project
+
 def get_learning(db: Session, learning_id: int):
     return db.query(models_db.Learning).filter(models_db.Learning.id == learning_id).first()
 

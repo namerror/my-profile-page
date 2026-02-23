@@ -46,6 +46,7 @@ class Project(Base):
     is_completed: Mapped[bool] = mapped_column(Boolean, default=False)
     skills = relationship("Skill", secondary=project_skill, backref="projects")
     content: Mapped[str] = mapped_column(Text, nullable=True) # Markdown body
+    image_url: Mapped[str] = mapped_column(String, nullable=True)  # Relative URL path to uploaded image
 
 # A learning resource such as book, link, video, etc.
 class Learning(Base):

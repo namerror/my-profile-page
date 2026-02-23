@@ -1,16 +1,19 @@
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .models import *
-# from .db.session import engine
-# from .db.base import Base
+from fastapi.staticfiles import StaticFiles
 from .api import projects, skills, auth, learnings, contact, categories, activities, user
-import os
 from dotenv import load_dotenv
 
 load_dotenv()
 ALLOWED_ORIGINS = os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")
 
 app = FastAPI()
+
+# Serve uploaded images
+UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "..", "uploads")
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 
 # Allow frontend dev server
 app.add_middleware(
@@ -36,22 +39,3 @@ app.include_router(user.router)
 @app.get("/")
 def read_root():
     return {"message": "Backend is running!"}
-
-''' Hardcoded Data - Used for Testing Only '''
-# hardcoded skills
-_skill_frontend = Skill(name="Frontend")
-_skill_nextjs = Skill(name="Next.js", parent=_skill_frontend)
-_skill_blockchain = Skill(name="Blockchain")
-_skill_solana = Skill(name="Solana", parent=_skill_blockchain)
-_skill_python = Skill(name="Python")
-
-# hardcoded projects
-_projects: list[Project] = [
-    Project(id=1, name="HackProof", description="A decentralized voting system for hacking projects", is_completed=True, skills=[_skill_frontend, _skill_solana]),
-    Project(id=2, name="Portfolio", description="My own portfolio page that you're currently viewing", is_completed=False, skills=[_skill_frontend, _skill_python]),
-]
-
-# ''' Routing '''
-# @app.get("/", response_model=list[Project])
-# def list_projects():
-#     return _projects

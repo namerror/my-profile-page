@@ -40,6 +40,7 @@ class ProjectCreate(ProjectBase):
 class ProjectRead(ProjectBase):
     id: int
     skills: List[SkillRead] = []
+    image_url: Optional[str] = None
     class Config:
         orm_mode = True
 
