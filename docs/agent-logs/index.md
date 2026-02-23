@@ -1,6 +1,7 @@
 # Agent Session Log Index
 
 Newest first.
+- [2026-02-23 — copilot-2](2026-02-23-copilot-2.md) — Fix build error: add missing required props to Cropper component
 - [2026-02-23 — codex](2026-02-23-codex-2.md) — Add crop modal to project image uploads
 - [2026-02-23 — copilot](2026-02-23-copilot.md) — Fix skill tag overflow in Project and Learning manager tabs
 - [2026-02-23 — claude-3](2026-02-23-claude-3.md) — Modularize admin dashboard managerConfigs into per-entity files

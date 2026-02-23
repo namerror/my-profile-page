@@ -265,7 +265,18 @@ function ProjectImageControls({ item, onRefresh }: { item: ProjectRead; onRefres
                                     image={previewUrl}
                                     crop={crop}
                                     zoom={zoom}
+                                    rotation={0}
                                     aspect={3 / 2}
+                                    minZoom={1}
+                                    maxZoom={3}
+                                    cropShape="rect"
+                                    zoomSpeed={1}
+                                    restrictPosition={true}
+                                    keyboardStep={1}
+                                    style={{}}
+                                    classes={{}}
+                                    mediaProps={{}}
+                                    cropperProps={{}}
                                     onCropChange={setCrop}
                                     onZoomChange={setZoom}
                                     onCropComplete={(_, croppedAreaPixelsValue) =>
