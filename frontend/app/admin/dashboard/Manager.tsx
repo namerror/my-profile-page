@@ -31,6 +31,7 @@ export interface ListItemRenderProps<T> {
     item: T;
     onEdit: (item: T) => void;
     onDelete: (id: number) => void;
+    onRefresh: () => Promise<void>;
 }
 
 export interface FormSetters<F = Record<string, unknown>> {
@@ -221,10 +222,11 @@ export default function Manager<T extends { id: number }, F = Record<string, unk
                 ) : (
                     items.map((item) => (
                         <div key={item.id}>
-                            {config.renderListItem({ 
-                                item, 
-                                onEdit: handleEdit, 
-                                onDelete: handleDelete 
+                            {config.renderListItem({
+                                item,
+                                onEdit: handleEdit,
+                                onDelete: handleDelete,
+                                onRefresh: fetchItems,
                             })}
                             
                             {/* Form for editing - appears under the item being edited */}

@@ -59,6 +59,7 @@ export type SkillCreate = SkillBase
 export type ProjectRead = ProjectBase & {
   id: number;
   skills: SkillRead[];
+  image_url: string | null;
 }
 
 export type ProjectCreate = ProjectBase & {

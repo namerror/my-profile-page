@@ -1,6 +1,6 @@
 import { ManagerConfig } from './Manager';
 import { ActivityRead, CategoryRead, LearningRead, ProjectRead, SkillRead, UserRead } from '@/app/page';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, ChangeEvent } from 'react';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -305,6 +305,91 @@ export function createSkillConfig(skills: SkillRead[], categories: CategoryRead[
     };
 }
 
+// Image upload/remove controls for a single project
+function ProjectImageControls({ item, onRefresh }: { item: ProjectRead; onRefresh: () => Promise<void> }) {
+    const [uploading, setUploading] = useState(false);
+    const [imgError, setImgError] = useState<string | null>(null);
+    const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
+
+    async function handleUpload(e: ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        setUploading(true);
+        setImgError(null);
+        const formData = new FormData();
+        formData.append('file', file);
+        try {
+            const res = await fetch(`${API_URL}/projects/${item.id}/image`, {
+                method: 'POST',
+                headers: { Authorization: `Bearer ${token}` },
+                body: formData,
+            });
+            if (!res.ok) {
+                const data = await res.json().catch(() => ({}));
+                throw new Error((data as { detail?: string })?.detail || 'Upload failed');
+            }
+            await onRefresh();
+        } catch (err: unknown) {
+            setImgError(err instanceof Error ? err.message : 'Upload failed');
+        } finally {
+            setUploading(false);
+            e.target.value = '';
+        }
+    }
+
+    async function handleRemoveImage() {
+        if (!confirm('Remove this project image?')) return;
+        setUploading(true);
+        setImgError(null);
+        try {
+            const res = await fetch(`${API_URL}/projects/${item.id}/image`, {
+                method: 'DELETE',
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            if (!res.ok) throw new Error('Failed to remove image');
+            await onRefresh();
+        } catch (err: unknown) {
+            setImgError(err instanceof Error ? err.message : 'Failed to remove image');
+        } finally {
+            setUploading(false);
+        }
+    }
+
+    return (
+        <div className="mt-3 border-t border-slate-100 pt-3">
+            {item.image_url && (
+                <div className="mb-2 flex items-center gap-3">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                        src={item.image_url!}
+                        alt="Project image"
+                        className="h-16 w-24 rounded-lg object-cover border border-slate-200"
+                    />
+                    <button
+                        type="button"
+                        onClick={handleRemoveImage}
+                        disabled={uploading}
+                        className={`${actionButtonDelete} disabled:opacity-50`}
+                    >
+                        Remove Image
+                    </button>
+                </div>
+            )}
+            <label className={`${actionButtonBase} cursor-pointer bg-slate-100 text-slate-700 hover:bg-slate-200 ${uploading ? 'opacity-50 pointer-events-none' : ''}`}>
+                {uploading ? 'Uploading...' : item.image_url ? 'Replace Image' : 'Upload Image'}
+                <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/gif,image/webp"
+                    onChange={handleUpload}
+                    className="sr-only"
+                    disabled={uploading}
+                />
+            </label>
+            {imgError && <p className="mt-1 text-xs text-rose-600">{imgError}</p>}
+        </div>
+    );
+}
+
 // Project Manager Config Factory
 export function createProjectConfig(skills: SkillRead[]): ManagerConfig<ProjectRead, ProjectFormState> {
     return {
@@ -416,7 +501,7 @@ export function createProjectConfig(skills: SkillRead[]): ManagerConfig<ProjectR
                 </>
             );
         },
-        renderListItem: ({ item, onEdit, onDelete }) => (
+        renderListItem: ({ item, onEdit, onDelete, onRefresh }) => (
         <div className={cardClass}>
             <div className={`${listHeaderClass} mb-2`}>
                 <div className={listContentClass}>
@@ -462,6 +547,8 @@ export function createProjectConfig(skills: SkillRead[]): ManagerConfig<ProjectR
                         </div>
                     )}
                 </div>
+
+                <ProjectImageControls item={item} onRefresh={onRefresh} />
             </div>
         ),
     };
