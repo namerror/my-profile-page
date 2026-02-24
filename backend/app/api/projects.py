@@ -100,7 +100,8 @@ def delete_project_image(
     return crud.clear_project_image(db, p)
 
 def _delete_blob(url: str) -> None:
-    httpx.delete(
+    httpx.request(
+        "DELETE",
         BLOB_API_URL,
         headers={"Authorization": f"Bearer {BLOB_TOKEN}"},
         json={"urls": [url]},

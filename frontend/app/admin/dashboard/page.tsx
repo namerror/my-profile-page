@@ -59,8 +59,9 @@ export default function AdminDashboard() {
   };
 
   return (
-    <main className="min-h-screen w-full overflow-x-hidden bg-slate-50 text-slate-900">
-      <div className="md:hidden sticky top-0 z-30 flex items-center justify-between border-b border-slate-200 bg-white/90 px-4 py-3 backdrop-blur">
+    <main className="min-h-screen w-full bg-slate-50 text-slate-900 flex flex-col">
+      {/* Mobile top bar */}
+      <div className="md:hidden flex-shrink-0 flex items-center justify-between border-b border-slate-200 bg-white/90 px-4 py-3 backdrop-blur z-30">
         <button
           onClick={() => setIsMenuOpen(true)}
           className="inline-flex items-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm"
@@ -76,13 +77,14 @@ export default function AdminDashboard() {
         </button>
       </div>
 
+      {/* Mobile drawer */}
       {isMenuOpen && (
         <div className="md:hidden fixed inset-0 z-40">
           <div
             className="absolute inset-0 bg-slate-900/40"
             onClick={() => setIsMenuOpen(false)}
           />
-          <div className="absolute inset-y-0 left-0 w-72 bg-white shadow-xl">
+          <div className="absolute inset-y-0 left-0 w-72 bg-white shadow-xl flex flex-col">
             <div className="flex items-center justify-between border-b border-slate-200 px-4 py-4">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Admin</p>
@@ -95,7 +97,7 @@ export default function AdminDashboard() {
                 Close
               </button>
             </div>
-            <nav className="flex flex-col gap-1 px-3 py-4">
+            <nav className="flex flex-col gap-1 px-3 py-4 overflow-y-auto">
               {navItems.map((item) => (
                 <button
                   key={item.id}
@@ -117,56 +119,61 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      <aside className="hidden md:fixed md:left-0 md:top-16 md:z-20 md:flex md:h-[calc(100vh-4rem)] md:w-64 md:flex-col md:border-r md:border-slate-200 md:bg-white">
-        <div className="border-b border-slate-200 px-6 py-6">
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Admin</p>
-          <h1 className="text-2xl font-semibold text-slate-900">Dashboard</h1>
-        </div>
-        <nav className="flex flex-1 flex-col gap-1 px-4 py-6">
-          {navItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => setActiveTab(item.id)}
-              className={`flex items-center justify-between rounded-lg px-3 py-2 text-sm font-semibold transition ${
-                activeTab === item.id
-                  ? 'bg-blue-50 text-blue-700'
-                  : 'text-slate-600 hover:bg-slate-100'
-              }`}
-            >
-              {item.label}
-            </button>
-          ))}
-        </nav>
-        <div className="border-t border-slate-200 px-6 py-5">
-          <button
-            onClick={handleLogout}
-            className="w-full rounded-lg bg-rose-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-rose-700"
-          >
-            Logout
-          </button>
-        </div>
-      </aside>
-
-      <div className="w-full min-w-0 px-4 pb-10 pt-6 md:ml-64 md:w-[calc(100%-16rem)] md:max-w-[calc(100%-16rem)] md:px-10">
-        <div className="mb-6 hidden min-w-0 items-center justify-between md:flex">
-          <div className="min-w-0">
+      {/* Body: sidebar + content */}
+      <div className="flex flex-1">
+        {/* Desktop sidebar */}
+        <aside className="hidden md:flex md:w-64 md:flex-shrink-0 md:flex-col md:border-r md:border-slate-200 md:bg-white overflow-y-auto">
+          <div className="border-b border-slate-200 px-6 py-6">
             <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Admin</p>
-            <h2 className="text-3xl font-semibold text-slate-900">{activeLabel}</h2>
+            <h1 className="text-2xl font-semibold text-slate-900">Dashboard</h1>
           </div>
-          <button
-            onClick={handleLogout}
-            className="inline-flex items-center rounded-lg border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-semibold text-rose-700 shadow-sm hover:bg-rose-100"
-          >
-            Logout
-          </button>
-        </div>
+          <nav className="flex flex-1 flex-col gap-1 px-4 py-6">
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => setActiveTab(item.id)}
+                className={`flex items-center justify-between rounded-lg px-3 py-2 text-sm font-semibold transition ${
+                  activeTab === item.id
+                    ? 'bg-blue-50 text-blue-700'
+                    : 'text-slate-600 hover:bg-slate-100'
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
+          </nav>
+          <div className="border-t border-slate-200 px-6 py-5">
+            <button
+              onClick={handleLogout}
+              className="w-full rounded-lg bg-rose-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-rose-700"
+            >
+              Logout
+            </button>
+          </div>
+        </aside>
 
-        {activeTab === 'projects' && <Manager config={projectConfig} />}
-        {activeTab === 'skills' && <Manager config={skillConfig} />}
-        {activeTab === 'learnings' && <Manager config={learningConfig} />}
-        {activeTab === 'categories' && <Manager config={categoryConfig} />}
-        {activeTab === 'activities' && <Manager config={activityConfig} />}
-        {activeTab === 'user' && <Manager config={userConfig} />}
+        {/* Main content with its own scrollbar */}
+        <div className="flex-1 min-w-0 px-4 pb-10 pt-6 md:px-10">
+          <div className="mb-6 hidden min-w-0 items-center justify-between md:flex">
+            <div className="min-w-0">
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Admin</p>
+              <h2 className="text-3xl font-semibold text-slate-900">{activeLabel}</h2>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="inline-flex items-center rounded-lg border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-semibold text-rose-700 shadow-sm hover:bg-rose-100"
+            >
+              Logout
+            </button>
+          </div>
+
+          {activeTab === 'projects' && <Manager config={projectConfig} />}
+          {activeTab === 'skills' && <Manager config={skillConfig} />}
+          {activeTab === 'learnings' && <Manager config={learningConfig} />}
+          {activeTab === 'categories' && <Manager config={categoryConfig} />}
+          {activeTab === 'activities' && <Manager config={activityConfig} />}
+          {activeTab === 'user' && <Manager config={userConfig} />}
+        </div>
       </div>
     </main>
   );
