@@ -1,6 +1,7 @@
 # Agent Session Log Index
 
 Newest first.
+- [2026-02-27 — claude](2026-02-27-claude.md) — Add background image layer and hover effects to ProjectCard
 - [2026-02-23 — copilot-2](2026-02-23-copilot-2.md) — Fix build error: add missing required props to Cropper component
 - [2026-02-23 — codex](2026-02-23-codex-2.md) — Add crop modal to project image uploads
 - [2026-02-23 — copilot](2026-02-23-copilot.md) — Fix skill tag overflow in Project and Learning manager tabs

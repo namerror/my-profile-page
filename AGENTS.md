@@ -32,7 +32,7 @@ This repo is a monorepo with a Next.js frontend and a FastAPI backend. Use this 
 - Log changes after every session in `docs/agent-logs/` per `docs/agent-logs/README.md`.
 
 ## Do Not
-- Do not modify `frontend/app/package-lock.json` or `backend/requirements.txt`, if a new package needs to be added, ask for permission.
+- Do not modify `frontend/app/package-lock.json` or `backend/requirements.txt` unless running package install commands, if a new package needs to be added, ask for permission.
 - Do not add new dependencies without confirming.
 - Do not generate large files or code dumps unless requested.
 - Do not make changes to environment variables or secrets without explicit instructions.
