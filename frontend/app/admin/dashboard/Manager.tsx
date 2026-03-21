@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useMemo, useCallback } from 'react';
+import Popup from './Popup';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -18,6 +19,7 @@ export interface ManagerConfig<T, F = Record<string, unknown>> {
     resetFormData: (setters: FormSetters<F>) => void;
     getInitialFormState: () => F;
     isSingleton?: boolean; // If true, treats API as singleton (returns single object, not array)
+    usePopup?: boolean; // If true, shows create/edit form in a popup instead of inline
 }
 
 export interface FormRenderProps<T, F = Record<string, unknown>> {
@@ -168,10 +170,18 @@ export default function Manager<T extends { id: number }, F = Record<string, unk
                     </h2>
                 </div>
                 <button
-                    onClick={() => setShowForm(!showForm)}
+                    onClick={() => {
+                        if (config.usePopup) {
+                            config.resetFormData({ setFormState });
+                            setEditing(null);
+                            setShowForm(true);
+                        } else {
+                            setShowForm(!showForm);
+                        }
+                    }}
                     className={headerButtonClass}
                 >
-                    {showForm ? 'Close form' : `+ New ${config.entityName}`}
+                    {config.usePopup ? `+ New ${config.entityName}` : (showForm ? 'Close form' : `+ New ${config.entityName}`)}
                 </button>
             </div>
 
@@ -181,8 +191,8 @@ export default function Manager<T extends { id: number }, F = Record<string, unk
                 </div>
             )}
 
-            {/* Form for creating new items (only show when not editing) */}
-            {showForm && !editing && (
+            {/* Form for creating new items (only show when not editing, and not using popup) */}
+            {!config.usePopup && showForm && !editing && (
                 <form onSubmit={handleSubmit} className="mt-5 rounded-xl border border-slate-200 bg-slate-50 p-5">
                     <div className="mb-4">
                         <h3 className="text-lg font-semibold text-slate-900">
@@ -229,8 +239,8 @@ export default function Manager<T extends { id: number }, F = Record<string, unk
                                 onRefresh: fetchItems,
                             })}
                             
-                            {/* Form for editing - appears under the item being edited */}
-                            {editing && editing.id === item.id && showForm && (
+                            {/* Form for editing - appears under the item being edited (only when not using popup) */}
+                            {!config.usePopup && editing && editing.id === item.id && showForm && (
                                 <form onSubmit={handleSubmit} className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-5">
                                     <div className="mb-4">
                                         <h3 className="text-lg font-semibold text-slate-900">
@@ -264,6 +274,34 @@ export default function Manager<T extends { id: number }, F = Record<string, unk
                     ))
                 )}
             </div>
+
+            {/* Popup for create/edit (when usePopup is true) */}
+            {config.usePopup && showForm && (
+                <Popup
+                    title={editing ? `Edit ${config.entityName}` : `Create ${config.entityName}`}
+                    subtitle={editing ? 'Update the fields below, then save your changes.' : 'Fill out the details below and save when you are ready.'}
+                    onClose={resetForm}
+                >
+                    <form onSubmit={handleSubmit}>
+                        {config.renderForm({ formState, setFormState, editing, error })}
+                        <div className="flex flex-wrap gap-2 pt-2">
+                            <button
+                                type="submit"
+                                className={primaryButtonClass}
+                            >
+                                {editing ? 'Update' : 'Create'}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={resetForm}
+                                className={editing ? dangerButtonClass : secondaryButtonClass}
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </Popup>
+            )}
         </section>
     );
 }

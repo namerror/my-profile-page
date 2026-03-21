@@ -20,6 +20,7 @@ export function createActivityConfig(skills: SkillRead[]): ManagerConfig<Activit
         entityName: 'Activity',
         entityNamePlural: 'Activities',
         apiEndpoint: 'activities',
+        usePopup: true,
         getInitialFormState: () => ({
             title: '',
             type: '',

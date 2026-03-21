@@ -331,6 +331,7 @@ export function createProjectConfig(skills: SkillRead[]): ManagerConfig<ProjectR
         entityName: 'Project',
         entityNamePlural: 'Projects',
         apiEndpoint: 'projects',
+        usePopup: true,
         getInitialFormState: () => ({
             name: '',
             description: '',
