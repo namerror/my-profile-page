@@ -1,6 +1,7 @@
 # Agent Session Log Index
 
 Newest first.
+- [2026-07-08 — codex](2026-07-08-codex.md) — Add GitHub contribution calendar to home page
 - [2026-05-24 — codex](2026-05-24-codex.md) — Replace standalone Projects page with home-page anchor navigation and disable custom scroll wrapper
 - [2026-02-27 — claude](2026-02-27-claude.md) — Add background image layer and hover effects to ProjectCard
 - [2026-02-23 — copilot-2](2026-02-23-copilot-2.md) — Fix build error: add missing required props to Cropper component
