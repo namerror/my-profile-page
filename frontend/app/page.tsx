@@ -1,4 +1,5 @@
 import ProjectCarousel from "./components/ProjectCarousel";
+import GitHubContributionCalendar from "./components/GitHubContributionCalendar";
 import RoleRotator from "./components/RoleRotator";
 import TiltSection from "./components/TiltSection";
 import Link from 'next/link'; // Import Link from next/link
@@ -187,6 +188,7 @@ export default async function HomePage() {
           </div>
         </section>
       </section>
+      <GitHubContributionCalendar />
       {/* Learning Section */}
       <section className="mb-16 bg-[#fafafa] p-6 rounded-xl shadow-md">
         <h2 className="text-2xl font-semibold mb-6">Learning</h2>

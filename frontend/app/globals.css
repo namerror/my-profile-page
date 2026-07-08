@@ -86,3 +86,177 @@ body {
   overflow: hidden;
   will-change: transform;
 }
+
+.github-calendar {
+  --color-calendar-graph-day-bg: #ebedf0;
+  --color-calendar-graph-day-L1-bg: #d8d8d8;
+  --color-calendar-graph-day-L2-bg: #b8b8b8;
+  --color-calendar-graph-day-L3-bg: #888888;
+  --color-calendar-graph-day-L4-bg: #4a4a4a;
+  border: 0;
+  border-radius: 0;
+  color: #131313;
+  margin: 0;
+  min-height: 175px;
+  overflow-x: auto;
+  padding: 0;
+  text-align: left;
+}
+
+.github-calendar-loading {
+  border-radius: 0.5rem;
+  background: #f2f3f3;
+  color: #4b5563;
+  font-size: 0.875rem;
+  padding: 1rem;
+}
+
+.github-calendar .js-calendar-graph {
+  min-width: 720px;
+}
+
+.github-calendar .calendar-graph {
+  padding: 0;
+  text-align: left;
+}
+
+.github-calendar a[href^="#year-link-"] {
+  display: none;
+}
+
+.github-calendar table.ContributionCalendar-grid {
+  border-collapse: separate !important;
+  border-spacing: 3px !important;
+  margin: 0 auto;
+  overflow: hidden;
+  width: max-content;
+}
+
+.github-calendar table.ContributionCalendar-grid tr {
+  height: 13px;
+}
+
+.github-calendar table.ContributionCalendar-grid .ContributionCalendar-day {
+  box-sizing: border-box;
+  height: 10px !important;
+  min-width: 10px;
+  padding: 0 !important;
+  width: 10px !important;
+}
+
+.github-calendar table.ContributionCalendar-grid td.ContributionCalendar-label {
+  padding-right: 8px !important;
+  text-align: right;
+}
+
+.github-calendar td.ContributionCalendar-label span[aria-hidden="true"] {
+  left: -4px;
+  position: relative;
+}
+
+.github-calendar .ContributionCalendar-day {
+  border-radius: 2px;
+  outline: 1px solid rgba(27, 31, 36, 0.04);
+  outline-offset: -1px;
+}
+
+.github-calendar .calendar-graph text.wday,
+.github-calendar .calendar-graph text.month,
+.github-calendar text.ContributionCalendar-label {
+  fill: #6b7280;
+}
+
+.github-calendar .ContributionCalendar-day[data-level="0"] {
+  fill: #ebedf0;
+  background-color: #ebedf0;
+}
+
+.github-calendar .ContributionCalendar-day[data-level="1"] {
+  fill: #d8d8d8;
+  background-color: #d8d8d8;
+}
+
+.github-calendar .ContributionCalendar-day[data-level="2"] {
+  fill: #b8b8b8;
+  background-color: #b8b8b8;
+}
+
+.github-calendar .ContributionCalendar-day[data-level="3"] {
+  fill: #888888;
+  background-color: #888888;
+}
+
+.github-calendar .ContributionCalendar-day[data-level="4"] {
+  fill: #4a4a4a;
+  background-color: #4a4a4a;
+}
+
+.github-calendar .contrib-footer a,
+.github-calendar .left.text-muted a {
+  color: #374151;
+}
+
+.github-calendar .contrib-legend .legend li:nth-child(1) {
+  background: #ebedf0;
+}
+
+.github-calendar .contrib-legend .legend li:nth-child(2) {
+  background: #d8d8d8;
+}
+
+.github-calendar .contrib-legend .legend li:nth-child(3) {
+  background: #b8b8b8;
+}
+
+.github-calendar .contrib-legend .legend li:nth-child(4) {
+  background: #888888;
+}
+
+.github-calendar .contrib-legend .legend li:nth-child(5) {
+  background: #4a4a4a;
+}
+
+.github-calendar-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 1rem;
+}
+
+.github-calendar-stat {
+  border-left: 1px solid #e5e7eb;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1rem;
+  text-align: center;
+}
+
+.github-calendar-stat-first {
+  border-left: 0;
+}
+
+.github-calendar-stat-label {
+  color: #6b7280;
+  font-size: 0.75rem;
+  line-height: 1.25;
+}
+
+.github-calendar-stat-number {
+  color: #131313;
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+@media screen and (max-width: 768px) {
+  .github-calendar-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .github-calendar-stat,
+  .github-calendar-stat-first {
+    border-left: 0;
+  }
+}
+
