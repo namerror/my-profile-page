@@ -54,3 +54,7 @@ def get_current_admin(credentials: HTTPAuthorizationCredentials = Depends(securi
     if username != admin_user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authorized")
     return username
+
+@router.get("/verify")
+def verify_admin(admin: str = Depends(get_current_admin)):
+    return {"authenticated": True}

@@ -1,6 +1,8 @@
 # Agent Session Log Index
 
 Newest first.
+- [2026-08-11 — codex-3](2026-08-11-codex-3.md) — Move gallery uploads direct to Vercel Blob
+- [2026-08-11 — codex-2](2026-08-11-codex-2.md) — Preserve animated GIFs in project gallery
 - [2026-08-11 — codex](2026-08-11-codex.md) — Add per-project photo galleries
 - [2026-07-08 — codex](2026-07-08-codex.md) — Add GitHub contribution calendar to home page
 - [2026-05-24 — codex](2026-05-24-codex.md) — Replace standalone Projects page with home-page anchor navigation and disable custom scroll wrapper

@@ -91,6 +91,7 @@ export default function ProjectGallery({ images }: ProjectGalleryProps) {
               alt={image.description || `Project photo ${index + 1}`}
               fill
               sizes="(min-width: 768px) 33vw, 50vw"
+              unoptimized
               className="object-cover transition duration-300 group-hover:scale-105"
             />
             <span className="absolute inset-0 bg-black/0 transition group-hover:bg-black/10" />
@@ -145,6 +146,7 @@ export default function ProjectGallery({ images }: ProjectGalleryProps) {
                 alt={activeImage.description || `Project photo ${activePhotoNumber}`}
                 fill
                 sizes="100vw"
+                unoptimized
                 className="object-contain"
                 priority
               />
@@ -176,6 +178,7 @@ export default function ProjectGallery({ images }: ProjectGalleryProps) {
                         alt=""
                         fill
                         sizes="96px"
+                        unoptimized
                         className="object-cover"
                       />
                     </button>

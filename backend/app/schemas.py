@@ -42,6 +42,10 @@ class ProjectGalleryImageBase(BaseModel):
 class ProjectGalleryImageCreate(BaseModel):
     description: Optional[str] = None
 
+class ProjectGalleryBlobCreate(BaseModel):
+    image_url: str
+    description: Optional[str] = None
+
 class ProjectGalleryImageUpdate(BaseModel):
     description: Optional[str] = None
     sort_order: Optional[int] = None
