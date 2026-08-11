@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@vercel/blob": "^2.8.0",
     "framer-motion": "^12.23.24",
     "github-calendar": "^2.3.4",
     "next": "15.5.9",

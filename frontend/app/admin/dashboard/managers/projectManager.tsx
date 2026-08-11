@@ -4,6 +4,7 @@ import { useState, ChangeEvent, useRef, useEffect, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import { createPortal } from 'react-dom';
 import type { Area } from 'react-easy-crop';
+import { upload } from '@vercel/blob/client';
 import {
     ProjectFormState,
     API_URL,
@@ -24,8 +25,10 @@ import {
 const Cropper = dynamic(() => import('react-easy-crop'), { ssr: false });
 
 const SUPPORTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+const ALLOWED_GALLERY_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 const DEFAULT_UPLOAD_QUALITY = 0.85;
 const MAX_OUTPUT_WIDTH = 800;
+const MAX_GALLERY_UPLOAD_BYTES = 25 * 1024 * 1024;
 
 function createImage(url: string): Promise<HTMLImageElement> {
     return new Promise((resolve, reject) => {
@@ -331,6 +334,7 @@ function ProjectGalleryControls({ item, onRefresh }: { item: ProjectRead; onRefr
     const [descriptionDrafts, setDescriptionDrafts] = useState<Record<number, string>>({});
     const [working, setWorking] = useState<string | null>(null);
     const [galleryError, setGalleryError] = useState<string | null>(null);
+    const [uploadProgress, setUploadProgress] = useState<number | null>(null);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
     const galleryImages = useMemo(
@@ -357,14 +361,41 @@ function ProjectGalleryControls({ item, onRefresh }: { item: ProjectRead; onRefr
 
         setWorking('upload');
         setGalleryError(null);
+        setUploadProgress(0);
         try {
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('description', uploadDescription);
-            const res = await fetch(`${API_URL}/projects/${item.id}/gallery`, {
-                method: 'POST',
+            if (!token) {
+                throw new Error('Admin session expired. Sign in again.');
+            }
+            if (!ALLOWED_GALLERY_IMAGE_TYPES.includes(file.type)) {
+                throw new Error('Unsupported image type. Use JPEG, PNG, GIF, or WebP.');
+            }
+            if (file.size > MAX_GALLERY_UPLOAD_BYTES) {
+                throw new Error('Image too large. Max size is 25 MB.');
+            }
+
+            const safeFilename = file.name.replace(/[^a-zA-Z0-9._-]/g, '-') || 'gallery-image';
+            const blob = await upload(`project-gallery/${item.id}/${safeFilename}`, file, {
+                access: 'public',
+                handleUploadUrl: '/api/blob/gallery-upload',
+                clientPayload: JSON.stringify({ projectId: item.id }),
                 headers: { Authorization: `Bearer ${token}` },
-                body: formData,
+                contentType: file.type,
+                multipart: true,
+                onUploadProgress: (progress) => {
+                    setUploadProgress(Math.round(progress.percentage));
+                },
+            });
+
+            const res = await fetch(`${API_URL}/projects/${item.id}/gallery/blob`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    image_url: blob.url,
+                    description: uploadDescription,
+                }),
             });
             if (!res.ok) {
                 throw new Error(await getErrorMessage(res, 'Failed to upload gallery photo'));
@@ -375,6 +406,7 @@ function ProjectGalleryControls({ item, onRefresh }: { item: ProjectRead; onRefr
             setGalleryError(err instanceof Error ? err.message : 'Failed to upload gallery photo');
         } finally {
             setWorking(null);
+            setUploadProgress(null);
             if (fileInputRef.current) {
                 fileInputRef.current.value = '';
             }
@@ -455,6 +487,10 @@ function ProjectGalleryControls({ item, onRefresh }: { item: ProjectRead; onRefr
     }
 
     const isWorking = working !== null;
+    const uploadButtonLabel =
+        working === 'upload' && uploadProgress !== null
+            ? `Uploading... ${uploadProgress}%`
+            : 'Upload Gallery Photo';
 
     return (
         <div className="mt-3 border-t border-slate-100 pt-3">
@@ -547,7 +583,7 @@ function ProjectGalleryControls({ item, onRefresh }: { item: ProjectRead; onRefr
                     disabled={isWorking}
                 />
                 <label className={`${actionButtonBase} mt-3 cursor-pointer bg-slate-900 text-white hover:bg-slate-800 ${isWorking ? 'opacity-50 pointer-events-none' : ''}`}>
-                    {working === 'upload' ? 'Uploading...' : 'Upload Gallery Photo'}
+                    {uploadButtonLabel}
                     <input
                         type="file"
                         accept="image/jpeg,image/png,image/gif,image/webp"

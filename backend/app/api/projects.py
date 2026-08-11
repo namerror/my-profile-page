@@ -6,6 +6,7 @@ import httpx
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 from sqlalchemy.orm import Session
 from typing import List
+from urllib.parse import urlparse
 
 from ..db.session import get_db
 from .. import crud, schemas, models_db
@@ -99,6 +100,21 @@ def upload_project_gallery_image(
     crud.create_project_gallery_image(db, p, blob_url, _clean_description(description))
     return crud.get_project(db, project_id)
 
+@router.post("/{project_id}/gallery/blob", response_model=schemas.ProjectRead)
+def create_project_gallery_blob_image(
+    project_id: int,
+    image_in: schemas.ProjectGalleryBlobCreate,
+    db: Session = Depends(get_db),
+    admin: str = Depends(get_current_admin),
+):
+    p = crud.get_project(db, project_id)
+    if not p:
+        raise HTTPException(status_code=404, detail="Project not found")
+    if not _is_vercel_blob_url(image_in.image_url):
+        raise HTTPException(status_code=400, detail="Gallery image URL must be a Vercel Blob URL")
+    crud.create_project_gallery_image(db, p, image_in.image_url, _clean_description(image_in.description))
+    return crud.get_project(db, project_id)
+
 @router.put("/{project_id}/gallery/reorder", response_model=schemas.ProjectRead)
 def reorder_project_gallery_images(
     project_id: int,
@@ -185,6 +201,11 @@ def _clean_description(description: str | None) -> str | None:
         return None
     description = description.strip()
     return description or None
+
+def _is_vercel_blob_url(url: str) -> bool:
+    parsed = urlparse(url)
+    hostname = parsed.hostname or ""
+    return parsed.scheme == "https" and hostname.endswith(".blob.vercel-storage.com")
 
 def _delete_blob(url: str) -> None:
     httpx.request(
