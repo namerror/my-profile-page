@@ -47,6 +47,21 @@ class Project(Base):
     skills = relationship("Skill", secondary=project_skill, backref="projects")
     content: Mapped[str] = mapped_column(Text, nullable=True) # Markdown body
     image_url: Mapped[str] = mapped_column(String, nullable=True)  # Relative URL path to uploaded image
+    gallery_images = relationship(
+        "ProjectGalleryImage",
+        back_populates="project",
+        cascade="all, delete-orphan",
+        order_by="ProjectGalleryImage.sort_order",
+    )
+
+class ProjectGalleryImage(Base):
+    __tablename__ = "project_gallery_images"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    project_id: Mapped[int] = mapped_column(Integer, ForeignKey("projects.id"), index=True, nullable=False)
+    image_url: Mapped[str] = mapped_column(String, nullable=False)
+    description: Mapped[str] = mapped_column(Text, nullable=True)
+    sort_order: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    project = relationship("Project", back_populates="gallery_images")
 
 # A learning resource such as book, link, video, etc.
 class Learning(Base):

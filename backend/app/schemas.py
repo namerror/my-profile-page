@@ -1,6 +1,6 @@
 ''' Pydantic request/response schemas '''
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr
 from typing import List, Optional
 
 
@@ -14,8 +14,7 @@ class SkillCreate(SkillBase):
 
 class SkillRead(SkillBase):
     id: int
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 class CategoryBase(BaseModel):
     name: str
@@ -25,8 +24,7 @@ class CategoryCreate(CategoryBase):
 
 class CategoryRead(CategoryBase):
     id: int
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 class ProjectBase(BaseModel):
     name: str
@@ -37,12 +35,32 @@ class ProjectBase(BaseModel):
 class ProjectCreate(ProjectBase):
     skill_ids: List[int] = []
 
+class ProjectGalleryImageBase(BaseModel):
+    description: Optional[str] = None
+    sort_order: int = 0
+
+class ProjectGalleryImageCreate(BaseModel):
+    description: Optional[str] = None
+
+class ProjectGalleryImageUpdate(BaseModel):
+    description: Optional[str] = None
+    sort_order: Optional[int] = None
+
+class ProjectGalleryImageRead(ProjectGalleryImageBase):
+    id: int
+    project_id: int
+    image_url: str
+    model_config = ConfigDict(from_attributes=True)
+
+class ProjectGalleryReorder(BaseModel):
+    image_ids: List[int]
+
 class ProjectRead(ProjectBase):
     id: int
     skills: List[SkillRead] = []
     image_url: Optional[str] = None
-    class Config:
-        orm_mode = True
+    gallery_images: List[ProjectGalleryImageRead] = []
+    model_config = ConfigDict(from_attributes=True)
 
 class LearningBase(BaseModel):
     title: str
@@ -56,8 +74,7 @@ class LearningCreate(LearningBase):
 class LearningRead(LearningBase):
     id: int
     skills: List[SkillRead] = []
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 class ContactForm(BaseModel):
     name: str
@@ -80,8 +97,7 @@ class ActivityCreate(ActivityBase):
 class ActivityRead(ActivityBase):
     id: int
     skills: List[SkillRead] = []
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 class UserBase(BaseModel):
     name: str
@@ -106,5 +122,4 @@ class UserUpdate(BaseModel):
 
 class UserRead(UserBase):
     id: int
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
