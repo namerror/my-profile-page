@@ -57,10 +57,19 @@ export type SkillRead = SkillBase & {
 
 export type SkillCreate = SkillBase
 
+export type ProjectGalleryImageRead = {
+  id: number;
+  project_id: number;
+  image_url: string;
+  description: string | null;
+  sort_order: number;
+}
+
 export type ProjectRead = ProjectBase & {
   id: number;
   skills: SkillRead[];
   image_url: string | null;
+  gallery_images: ProjectGalleryImageRead[];
 }
 
 export type ProjectCreate = ProjectBase & {

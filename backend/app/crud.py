@@ -1,6 +1,7 @@
 ''' DB CRUD helpers (create/read/update/delete)'''
 
 from unicodedata import name
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from . import models_db, schemas
 
@@ -91,6 +92,80 @@ def clear_project_image(db: Session, project: models_db.Project):
     db.commit()
     db.refresh(project)
     return project
+
+def get_project_gallery_image(db: Session, project_id: int, image_id: int):
+    return (
+        db.query(models_db.ProjectGalleryImage)
+        .filter(
+            models_db.ProjectGalleryImage.project_id == project_id,
+            models_db.ProjectGalleryImage.id == image_id,
+        )
+        .first()
+    )
+
+def list_project_gallery_images(db: Session, project_id: int):
+    return (
+        db.query(models_db.ProjectGalleryImage)
+        .filter(models_db.ProjectGalleryImage.project_id == project_id)
+        .order_by(models_db.ProjectGalleryImage.sort_order, models_db.ProjectGalleryImage.id)
+        .all()
+    )
+
+def create_project_gallery_image(
+    db: Session,
+    project: models_db.Project,
+    image_url: str,
+    description: str | None = None,
+):
+    next_order = (
+        db.query(func.coalesce(func.max(models_db.ProjectGalleryImage.sort_order), -1))
+        .filter(models_db.ProjectGalleryImage.project_id == project.id)
+        .scalar()
+        + 1
+    )
+    gallery_image = models_db.ProjectGalleryImage(
+        project_id=project.id,
+        image_url=image_url,
+        description=description,
+        sort_order=next_order,
+    )
+    db.add(gallery_image)
+    db.commit()
+    db.refresh(gallery_image)
+    return gallery_image
+
+def update_project_gallery_image(
+    db: Session,
+    gallery_image: models_db.ProjectGalleryImage,
+    description: str | None,
+    sort_order: int | None = None,
+):
+    gallery_image.description = description
+    if sort_order is not None:
+        gallery_image.sort_order = sort_order
+    db.add(gallery_image)
+    db.commit()
+    db.refresh(gallery_image)
+    return gallery_image
+
+def reorder_project_gallery_images(db: Session, project: models_db.Project, image_ids: list[int]):
+    gallery_images = list_project_gallery_images(db, project.id)
+    existing_ids = [image.id for image in gallery_images]
+    if len(image_ids) != len(existing_ids) or set(image_ids) != set(existing_ids):
+        raise ValueError("Image IDs must match the project's gallery images")
+
+    images_by_id = {image.id: image for image in gallery_images}
+    for sort_order, image_id in enumerate(image_ids):
+        images_by_id[image_id].sort_order = sort_order
+        db.add(images_by_id[image_id])
+    db.commit()
+    db.refresh(project)
+    return project
+
+def delete_project_gallery_image(db: Session, gallery_image: models_db.ProjectGalleryImage):
+    db.delete(gallery_image)
+    db.commit()
+    return
 
 def get_learning(db: Session, learning_id: int):
     return db.query(models_db.Learning).filter(models_db.Learning.id == learning_id).first()

@@ -1,6 +1,6 @@
 import { ManagerConfig } from '../Manager';
-import { ProjectRead, SkillRead } from '@/app/page';
-import { useState, ChangeEvent, useRef, useEffect } from 'react';
+import { ProjectGalleryImageRead, ProjectRead, SkillRead } from '@/app/page';
+import { useState, ChangeEvent, useRef, useEffect, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import { createPortal } from 'react-dom';
 import type { Area } from 'react-easy-crop';
@@ -326,6 +326,244 @@ function ProjectImageControls({ item, onRefresh }: { item: ProjectRead; onRefres
     );
 }
 
+function ProjectGalleryControls({ item, onRefresh }: { item: ProjectRead; onRefresh: () => Promise<void> }) {
+    const [uploadDescription, setUploadDescription] = useState('');
+    const [descriptionDrafts, setDescriptionDrafts] = useState<Record<number, string>>({});
+    const [working, setWorking] = useState<string | null>(null);
+    const [galleryError, setGalleryError] = useState<string | null>(null);
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
+    const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
+    const galleryImages = useMemo(
+        () => [...(item.gallery_images ?? [])].sort((a, b) => a.sort_order - b.sort_order || a.id - b.id),
+        [item.gallery_images]
+    );
+
+    useEffect(() => {
+        setDescriptionDrafts(
+            Object.fromEntries(
+                galleryImages.map((image) => [image.id, image.description ?? ''])
+            )
+        );
+    }, [galleryImages]);
+
+    async function getErrorMessage(res: Response, fallback: string) {
+        const data = await res.json().catch(() => ({}));
+        return (data as { detail?: string })?.detail || fallback;
+    }
+
+    async function handleGalleryUpload(e: ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setWorking('upload');
+        setGalleryError(null);
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('description', uploadDescription);
+            const res = await fetch(`${API_URL}/projects/${item.id}/gallery`, {
+                method: 'POST',
+                headers: { Authorization: `Bearer ${token}` },
+                body: formData,
+            });
+            if (!res.ok) {
+                throw new Error(await getErrorMessage(res, 'Failed to upload gallery photo'));
+            }
+            setUploadDescription('');
+            await onRefresh();
+        } catch (err: unknown) {
+            setGalleryError(err instanceof Error ? err.message : 'Failed to upload gallery photo');
+        } finally {
+            setWorking(null);
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
+        }
+    }
+
+    async function handleSaveDescription(image: ProjectGalleryImageRead) {
+        setWorking(`save-${image.id}`);
+        setGalleryError(null);
+        try {
+            const res = await fetch(`${API_URL}/projects/${item.id}/gallery/${image.id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ description: descriptionDrafts[image.id] ?? '' }),
+            });
+            if (!res.ok) {
+                throw new Error(await getErrorMessage(res, 'Failed to update photo description'));
+            }
+            await onRefresh();
+        } catch (err: unknown) {
+            setGalleryError(err instanceof Error ? err.message : 'Failed to update photo description');
+        } finally {
+            setWorking(null);
+        }
+    }
+
+    async function handleMove(imageId: number, direction: -1 | 1) {
+        const currentIndex = galleryImages.findIndex((image) => image.id === imageId);
+        const nextIndex = currentIndex + direction;
+        if (currentIndex === -1 || nextIndex < 0 || nextIndex >= galleryImages.length) return;
+
+        const imageIds = galleryImages.map((image) => image.id);
+        [imageIds[currentIndex], imageIds[nextIndex]] = [imageIds[nextIndex], imageIds[currentIndex]];
+
+        setWorking(`move-${imageId}`);
+        setGalleryError(null);
+        try {
+            const res = await fetch(`${API_URL}/projects/${item.id}/gallery/reorder`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ image_ids: imageIds }),
+            });
+            if (!res.ok) {
+                throw new Error(await getErrorMessage(res, 'Failed to reorder gallery photos'));
+            }
+            await onRefresh();
+        } catch (err: unknown) {
+            setGalleryError(err instanceof Error ? err.message : 'Failed to reorder gallery photos');
+        } finally {
+            setWorking(null);
+        }
+    }
+
+    async function handleDeleteGalleryImage(image: ProjectGalleryImageRead) {
+        if (!confirm('Remove this gallery photo?')) return;
+        setWorking(`delete-${image.id}`);
+        setGalleryError(null);
+        try {
+            const res = await fetch(`${API_URL}/projects/${item.id}/gallery/${image.id}`, {
+                method: 'DELETE',
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            if (!res.ok) {
+                throw new Error(await getErrorMessage(res, 'Failed to remove gallery photo'));
+            }
+            await onRefresh();
+        } catch (err: unknown) {
+            setGalleryError(err instanceof Error ? err.message : 'Failed to remove gallery photo');
+        } finally {
+            setWorking(null);
+        }
+    }
+
+    const isWorking = working !== null;
+
+    return (
+        <div className="mt-3 border-t border-slate-100 pt-3">
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                <div>
+                    <h4 className="text-sm font-semibold text-slate-900">Project gallery</h4>
+                    <p className="text-xs text-slate-500">Shown on the project detail page, separate from the cover image.</p>
+                </div>
+                <span className={chipClass}>
+                    {galleryImages.length} {galleryImages.length === 1 ? 'photo' : 'photos'}
+                </span>
+            </div>
+
+            {galleryImages.length > 0 && (
+                <div className="mb-3 grid gap-3 sm:grid-cols-2">
+                    {galleryImages.map((image, index) => (
+                        <div key={image.id} className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                                src={image.image_url}
+                                alt="Project gallery photo"
+                                className="mb-3 h-32 w-full rounded-md border border-slate-200 object-cover"
+                            />
+                            <label className={labelClass} htmlFor={`gallery-description-${image.id}`}>
+                                Description
+                            </label>
+                            <textarea
+                                id={`gallery-description-${image.id}`}
+                                value={descriptionDrafts[image.id] ?? ''}
+                                onChange={(event) =>
+                                    setDescriptionDrafts({
+                                        ...descriptionDrafts,
+                                        [image.id]: event.target.value,
+                                    })
+                                }
+                                className={textareaClass}
+                                rows={2}
+                                disabled={isWorking}
+                            />
+                            <div className="mt-3 flex flex-wrap gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => handleMove(image.id, -1)}
+                                    disabled={isWorking || index === 0}
+                                    className={`${actionButtonBase} bg-slate-100 text-slate-700 hover:bg-slate-200 disabled:opacity-50`}
+                                >
+                                    Up
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => handleMove(image.id, 1)}
+                                    disabled={isWorking || index === galleryImages.length - 1}
+                                    className={`${actionButtonBase} bg-slate-100 text-slate-700 hover:bg-slate-200 disabled:opacity-50`}
+                                >
+                                    Down
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => handleSaveDescription(image)}
+                                    disabled={isWorking}
+                                    className={`${actionButtonEdit} disabled:opacity-50`}
+                                >
+                                    {working === `save-${image.id}` ? 'Saving...' : 'Save'}
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => handleDeleteGalleryImage(image)}
+                                    disabled={isWorking}
+                                    className={`${actionButtonDelete} disabled:opacity-50`}
+                                >
+                                    {working === `delete-${image.id}` ? 'Removing...' : 'Delete'}
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
+
+            <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50 p-3">
+                <label className={labelClass} htmlFor={`gallery-upload-description-${item.id}`}>
+                    New photo description
+                </label>
+                <textarea
+                    id={`gallery-upload-description-${item.id}`}
+                    value={uploadDescription}
+                    onChange={(event) => setUploadDescription(event.target.value)}
+                    className={textareaClass}
+                    rows={2}
+                    placeholder="Optional"
+                    disabled={isWorking}
+                />
+                <label className={`${actionButtonBase} mt-3 cursor-pointer bg-slate-900 text-white hover:bg-slate-800 ${isWorking ? 'opacity-50 pointer-events-none' : ''}`}>
+                    {working === 'upload' ? 'Uploading...' : 'Upload Gallery Photo'}
+                    <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/gif,image/webp"
+                        onChange={handleGalleryUpload}
+                        className="sr-only"
+                        disabled={isWorking}
+                        ref={fileInputRef}
+                    />
+                </label>
+            </div>
+
+            {galleryError && <p className="mt-2 text-xs text-rose-600">{galleryError}</p>}
+        </div>
+    );
+}
+
 export function createProjectConfig(skills: SkillRead[]): ManagerConfig<ProjectRead, ProjectFormState> {
     return {
         entityName: 'Project',
@@ -484,6 +722,7 @@ export function createProjectConfig(skills: SkillRead[]): ManagerConfig<ProjectR
                 </div>
 
                 <ProjectImageControls item={item} onRefresh={onRefresh} />
+                <ProjectGalleryControls item={item} onRefresh={onRefresh} />
             </div>
         ),
     };

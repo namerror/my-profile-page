@@ -49,7 +49,7 @@ my-profile-page/
 - [Pydantic](https://docs.pydantic.dev/) - Data validation
 - [Python-JOSE](https://github.com/mpdavis/python-jose) - JWT authentication
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -164,7 +164,7 @@ NEXT_PUBLIC_API_URL=http://localhost:8000
 
    The frontend will be available at `http://localhost:3000`
 
-## 📖 Usage Guide
+## Usage Guide
 
 ### For New Users (Creating Your Own Portfolio)
 
@@ -223,7 +223,7 @@ The platform supports the following content types:
 - **Activities**: Document professional activities, volunteer work, etc.
 - **Contact**: Manage contact form submissions
 
-## 🔧 Development
+## Development
 
 ### Frontend Development
 
@@ -277,7 +277,7 @@ When you make changes to database models in `backend/app/models_db.py`:
    alembic upgrade head
    ```
 
-## 🌐 Deployment
+## Deployment
 
 ### Frontend Deployment (Vercel)
 
@@ -307,21 +307,21 @@ The backend can be deployed to various platforms. Here are some options:
 4. Configure environment variables in Vercel dashboard (same as in your local `.env`)
 5. Deploy!
 
-#### Database Setup
+<!-- #### Database Setup
 
 [PLACEHOLDER: Add instructions for:
 - Setting up production PostgreSQL database
 - Running migrations in production
-- Database backup recommendations]
+- Database backup recommendations] -->
 
-## 🧪 Testing
+<!-- ## Testing
 
 [PLACEHOLDER: Add testing instructions when tests are available, including:
 - How to run frontend tests
 - How to run backend tests
-- Test coverage information]
+- Test coverage information] -->
 
-## 📁 Project Structure
+## Project Structure
 
 ### Frontend Structure
 
@@ -367,19 +367,19 @@ Contributions are welcome! Here's how you can help:
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request to the `development` branch
 
-## 📝 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 Copyright (c) 2025 Leon Long
 
-## 📞 Contact & Support
+## Contact & Support
 
 - **Author**: Leon Long
 - **LinkedIn**: [Leon Long](https://www.linkedin.com/in/leon-long-89a595317/)
 - **GitHub**: [@namerror](https://github.com/namerror/)
 
-## 🗺️ Roadmap
+## Roadmap
 
 Future features and improvements planned for this project:
 - Blog integration
@@ -387,7 +387,3 @@ Future features and improvements planned for this project:
 - AI resume generation based on profile data
 - Multi-language support
 - Customizable theme options
-
----
-
-**Happy Coding!** If you find this project useful, please consider giving it a ⭐ on GitHub!
