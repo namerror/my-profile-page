@@ -30,6 +30,7 @@ export default function RootLayout({
         <div className="pt-16">
           {children}
         </div>
+        <SpeedInsights />
       </body>
     </html>
   );
