@@ -102,49 +102,42 @@ export type UserRead = UserBase & {
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
+export const revalidate = 300;
+
 async function fetchProjects(): Promise<ProjectRead[]> {
-  const res = await fetch(`${API_URL}/projects/`, {next: { revalidate: 0}, cache:"no-store"});
+  const res = await fetch(`${API_URL}/projects/`, { next: { revalidate } });
   if (!res.ok) {
-    console.error("Failed to fetch projects")
-    return [];
+    throw new Error(`Failed to fetch projects: ${res.status} ${res.statusText}`);
   }
   return (await res.json()) as ProjectRead[];
 }
 
 // returns an array of skills
 export async function fetchSkills(): Promise<SkillRead[]> {
-  const res = await fetch(`${API_URL}/skills/`, {next: { revalidate: 0}, cache:"no-store"});
+  const res = await fetch(`${API_URL}/skills/`, { next: { revalidate } });
   if (!res.ok) {
-    console.error("Failed to fetch skills")
-    return [];
+    throw new Error(`Failed to fetch skills: ${res.status} ${res.statusText}`);
   }
   const skillsArray = (await res.json()) as SkillRead[];
   return skillsArray;
 }
 
 async function fetchLearnings(): Promise<LearningRead[]> {
-  const res = await fetch(`${API_URL}/learnings/`, {next: { revalidate: 0}, cache:"no-store"});
+  const res = await fetch(`${API_URL}/learnings/`, { next: { revalidate } });
   if (!res.ok) {
-    console.error("Failed to fetch learnings")
-    return [];
+    throw new Error(`Failed to fetch learnings: ${res.status} ${res.statusText}`);
   }
   const learningsArray = (await res.json()) as LearningRead[];
   return learningsArray;
 }
 
 async function fetchCategories(): Promise<CategoryRead[]> {
-  try {
-      const res = await fetch(`${API_URL}/categories/`, {next: { revalidate: 0}, cache:"no-store"});
-      if (!res.ok) {
-        console.error("Failed to fetch categories")
-        return [];
-      }
-      const data = await res.json();
-      return data as CategoryRead[];
-  } catch (err: unknown) {
-      console.error(err instanceof Error ? err.message : 'Failed to fetch categories');
-      return [];
+  const res = await fetch(`${API_URL}/categories/`, { next: { revalidate } });
+  if (!res.ok) {
+    throw new Error(`Failed to fetch categories: ${res.status} ${res.statusText}`);
   }
+  const data = await res.json();
+  return data as CategoryRead[];
 }
 
 function HomeLoadingScreen() {
@@ -165,13 +158,14 @@ function HomeLoadingScreen() {
 }
 
 async function HomePageContent() {
-
-  const allProjects = await fetchProjects();
+  const [allProjects, skills, learnings, categories] = await Promise.all([
+    fetchProjects(),
+    fetchSkills(),
+    fetchLearnings(),
+    fetchCategories(),
+  ]);
   const ongoingProjects = allProjects.filter(p => !p.is_completed);
   const completedProjects = allProjects.filter(p => p.is_completed);
-  const skills = await fetchSkills();
-  const learnings = await fetchLearnings();
-  const categories = await fetchCategories();
   return (
     <main className="min-h-screen max-w-7xl mx-auto p-8">
       <div className="flex justify-end">
