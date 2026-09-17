@@ -6,6 +6,7 @@ import Link from 'next/link'; // Import Link from next/link
 import { FaLinkedin, FaGithub } from "react-icons/fa";
 import Image from "next/image";
 import ScrollEffect from "./components/ScrollEffect";
+import { Suspense } from "react";
 
 interface SkillBase {
   name: string;
@@ -146,7 +147,24 @@ async function fetchCategories(): Promise<CategoryRead[]> {
   }
 }
 
-export default async function HomePage() {
+function HomeLoadingScreen() {
+  return (
+    <div
+      className="fixed inset-0 z-[100] flex min-h-screen flex-col items-center justify-center gap-4 bg-[#fffefe] text-[#131313]"
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+    >
+      <div
+        className="h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-[#131313] motion-reduce:animate-none"
+        aria-hidden="true"
+      />
+      <p className="text-base font-medium">Loading, please wait</p>
+    </div>
+  );
+}
+
+async function HomePageContent() {
 
   const allProjects = await fetchProjects();
   const ongoingProjects = allProjects.filter(p => !p.is_completed);
@@ -249,5 +267,13 @@ export default async function HomePage() {
       </section>
       </ScrollEffect>
     </main>
+  );
+}
+
+export default function HomePage() {
+  return (
+    <Suspense fallback={<HomeLoadingScreen />}>
+      <HomePageContent />
+    </Suspense>
   );
 }
