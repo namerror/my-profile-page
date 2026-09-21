@@ -1,6 +1,7 @@
 # Agent Session Log Index
 
 Newest first.
+- [2026-09-21 — codex](2026-09-21-codex.md) — Update homepage role rotator content
 - [2026-09-17 — codex-2](2026-09-17-codex-2.md) — Cache and parallelize homepage data
 - [2026-09-17 — codex](2026-09-17-codex.md) — Add homepage loading screen
 - [2026-08-11 — codex-3](2026-08-11-codex-3.md) — Move gallery uploads direct to Vercel Blob

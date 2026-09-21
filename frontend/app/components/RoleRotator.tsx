@@ -5,7 +5,7 @@ import { CategoryRead, SkillRead } from '../page';
 import { div } from 'framer-motion/client';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-const ROLES = ['Student', "Developer", "Artist"];
+const ROLES = ['Student', "Engineer", "Researcher"];
 
 interface RoleRotatorProps {
   skills: SkillRead[];
@@ -65,12 +65,15 @@ export default function RoleRotator({ skills, categories }: RoleRotatorProps) {
       onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
       >
         {currentRole === 'Student' && (
-          <p className="text-center text-gray-800">
-            BSc Computer Science - University of Massachusetts Amherst (2024 - 2028)
-          </p>
+          <div className="w-full text-center text-gray-800">
+            <p>BSc Computer Science - University of Massachusetts Amherst (2024 - 2028)</p>
+            <p className="mt-2">
+              Relevant course work: Object Oriented Programming, Data Structures and Algorithms, C, Multivariate Calculus, Linear Algebra, Computer Systems, Discrete Math, Statistics, Hardware Computing, Database, Distributed Systems, Machine Learning, Simulation, Programming Methodology
+            </p>
+          </div>
         )}
 
-        {currentRole === 'Developer' && (
+        {currentRole === 'Engineer' && (
           <div className="w-full">
             {categories.map(cat => (
               <div key={cat.id} className='flex items-center gap-2 mb-2'>
@@ -92,10 +95,11 @@ export default function RoleRotator({ skills, categories }: RoleRotatorProps) {
           </div>
         )}
 
-        {currentRole === 'Artist' && (
-          <p className="text-center text-gray-800">
-            Amateur Filmmaker, 3D/VFX Artist, Game Developer
-          </p>
+        {currentRole === 'Researcher' && (
+          <div className="w-full text-center text-gray-800">
+            <p>Robotics Resarch: Dynamic and Autonomous Robotic Systems Lab @UMass Amherst</p>
+            <p>Quantum Information: Krastanov Lab @UMass Amherst</p>
+          </div>
         )}
       </div>
     </div>
