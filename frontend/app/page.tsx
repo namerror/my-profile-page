@@ -18,6 +18,7 @@ interface ProjectBase {
   name: string;
   description: string;
   is_completed: boolean;
+  featured: boolean;
   content: string | null;
 }
 
@@ -77,10 +78,6 @@ export type ProjectCreate = ProjectBase & {
   skills: number[]; // array of skill IDs
 }
 
-type ProjectWithFeatured = ProjectRead & {
-  featured: boolean;
-}
-
 export type LearningRead = LearningBase & {
   id: number;
   skills: SkillRead[];
@@ -105,7 +102,6 @@ export type UserRead = UserBase & {
 
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-const FEATURED_PROJECT_IDS = new Set<number>([1, 2, 3]);
 
 export const revalidate = 300;
 
@@ -169,12 +165,8 @@ async function HomePageContent() {
     fetchLearnings(),
     fetchCategories(),
   ]);
-  const projects: ProjectWithFeatured[] = allProjects.map((project) => ({
-    ...project,
-    featured: FEATURED_PROJECT_IDS.has(project.id),
-  }));
-  const featuredProjects = projects.filter((project) => project.featured);
-  const completedProjects = projects.filter((project) => project.is_completed);
+  const featuredProjects = allProjects.filter((project) => project.featured);
+  const completedProjects = allProjects.filter((project) => project.is_completed);
   return (
     <main className="min-h-screen max-w-7xl mx-auto p-8">
       <div className="flex justify-end">

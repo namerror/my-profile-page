@@ -609,6 +609,7 @@ export function createProjectConfig(skills: SkillRead[]): ManagerConfig<ProjectR
             name: '',
             description: '',
             isCompleted: false,
+            featured: false,
             selectedSkills: [],
             content: null,
         }),
@@ -617,6 +618,7 @@ export function createProjectConfig(skills: SkillRead[]): ManagerConfig<ProjectR
                 name: '',
                 description: '',
                 isCompleted: false,
+                featured: false,
                 selectedSkills: [],
                 content: null,
             });
@@ -626,6 +628,7 @@ export function createProjectConfig(skills: SkillRead[]): ManagerConfig<ProjectR
                 name: item.name,
                 description: item.description,
                 isCompleted: item.is_completed,
+                featured: item.featured,
                 content: item.content,
                 selectedSkills: item.skills.map((skill) => skill.id),
             });
@@ -634,6 +637,7 @@ export function createProjectConfig(skills: SkillRead[]): ManagerConfig<ProjectR
             name: formState.name,
             description: formState.description,
             is_completed: formState.isCompleted,
+            featured: formState.featured,
             content: formState.content,
             skill_ids: formState.selectedSkills,
         }),
@@ -678,6 +682,20 @@ export function createProjectConfig(skills: SkillRead[]): ManagerConfig<ProjectR
                                 className={checkboxClass}
                             />
                             <span className="text-sm font-semibold">Completed</span>
+                        </label>
+                    </div>
+
+                    <div className="mb-3">
+                        <label className="flex items-center gap-2 text-sm text-slate-700">
+                            <input
+                                type="checkbox"
+                                checked={formState.featured}
+                                onChange={(e) =>
+                                    setFormState({ ...formState, featured: e.target.checked })
+                                }
+                                className={checkboxClass}
+                            />
+                            <span className="text-sm font-semibold">Featured</span>
                         </label>
                     </div>
 
@@ -743,6 +761,11 @@ export function createProjectConfig(skills: SkillRead[]): ManagerConfig<ProjectR
                     >
                         {item.is_completed ? 'Completed' : 'Ongoing'}
                     </span>
+                    {item.featured && (
+                        <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700">
+                            Featured
+                        </span>
+                    )}
                     {item.skills.length > 0 && (
                         <div className="flex flex-wrap gap-1">
                             {item.skills.map((skill) => (
