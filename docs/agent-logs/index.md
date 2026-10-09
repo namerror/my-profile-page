@@ -1,6 +1,8 @@
 # Agent Session Log Index
 
 Newest first.
+- [2026-10-09 — copilot-2](2026-10-09-copilot-2.md) — Add backend-backed featured project field and admin toggle
+- [2026-10-09 — copilot](2026-10-09-copilot.md) — Add featured projects section and card emphasis
 - [2026-09-21 — codex](2026-09-21-codex.md) — Update homepage role rotator content
 - [2026-09-17 — codex-2](2026-09-17-codex-2.md) — Cache and parallelize homepage data
 - [2026-09-17 — codex](2026-09-17-codex.md) — Add homepage loading screen

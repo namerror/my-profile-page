@@ -31,6 +31,7 @@ export interface ProjectFormState {
     name: string;
     description: string;
     isCompleted: boolean;
+    featured: boolean;
     selectedSkills: number[];
     content: string | null;
 }

@@ -18,6 +18,7 @@ interface ProjectBase {
   name: string;
   description: string;
   is_completed: boolean;
+  featured: boolean;
   content: string | null;
 }
 
@@ -164,8 +165,8 @@ async function HomePageContent() {
     fetchLearnings(),
     fetchCategories(),
   ]);
-  const ongoingProjects = allProjects.filter(p => !p.is_completed);
-  const completedProjects = allProjects.filter(p => p.is_completed);
+  const featuredProjects = allProjects.filter((project) => project.featured);
+  const completedProjects = allProjects.filter((project) => project.is_completed);
   return (
     <main className="min-h-screen max-w-7xl mx-auto p-8">
       <div className="flex justify-end">
@@ -199,8 +200,8 @@ async function HomePageContent() {
           <h2 className="text-3xl font-bold mb-8 text-[#fafafa] text-center">Projects</h2>
 
           <div className="mb-12">
-            <h3 className="text-xl font-semibold mb-4 text-[#fafafa] pb-2 text-center">Ongoing</h3>
-            <ProjectCarousel projects={ongoingProjects} />
+            <h3 className="text-xl font-semibold mb-4 text-[#fafafa] pb-2 text-center">Featured</h3>
+            <ProjectCarousel projects={featuredProjects} featured />
           </div>
 
           <div>

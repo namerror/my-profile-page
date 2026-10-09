@@ -3,6 +3,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { ProjectRead } from "../page";
 
+type ProjectCardProps = ProjectRead & {
+  featured?: boolean;
+}
+
 export default function ProjectCard({
   id,
   name,
@@ -10,13 +14,14 @@ export default function ProjectCard({
   is_completed,
   skills,
   image_url,
-}: ProjectRead) {
+  featured = false,
+}: ProjectCardProps) {
   const statusColor =
     is_completed ? "bg-[#2b2b2a] text-[#fafafa]" : "bg-gray-200 text-[#212121]";
 
   return (
     <Link href={`/projects/${id}`}>
-      <div className="group relative overflow-hidden rounded-2xl shadow hover:shadow-lg transition cursor-pointer h-full min-h-[380px] xs:min-h-[325px] sm:min-h-[325px] lg:min-h-[275px]">
+      <div className={`group relative overflow-hidden rounded-2xl shadow hover:shadow-lg transition cursor-pointer h-full min-h-[380px] xs:min-h-[325px] sm:min-h-[325px] lg:min-h-[275px] ${featured ? "ring-2 ring-amber-300/60 shadow-amber-200/40" : ""}`}>
 
         {/* Background: image layer when image_url is present, solid color otherwise */}
         {image_url ? (
@@ -48,6 +53,11 @@ export default function ProjectCard({
         {/* Card content — sits above all background layers */}
         <div className="relative z-10 p-5 flex flex-col justify-between h-full min-h-[380px] xs:min-h-[325px] sm:min-h-[325px] lg:min-h-[275px]">
           <div>
+            {featured && (
+              <span className="inline-block mb-2 text-xs px-2 py-1 rounded-full bg-amber-300 text-[#212121] font-semibold">
+                Featured
+              </span>
+            )}
             <h3 className="text-lg font-bold mb-2 text-[#fafafa]">{name}</h3>
             <p className="text-sm mb-3 line-clamp-7 text-[#fafafa] sm:line-clamp-5">{description}</p>
           </div>

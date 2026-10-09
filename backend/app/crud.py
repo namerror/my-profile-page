@@ -51,6 +51,7 @@ def create_project(db: Session, project_in: schemas.ProjectCreate):
         name=project_in.name, 
         description=project_in.description, 
         is_completed=project_in.is_completed,
+        featured=project_in.featured,
         content=project_in.content
         )
     if project_in.skill_ids:
@@ -65,6 +66,7 @@ def update_project(db: Session, project: models_db.Project, project_in: schemas.
     project.name = project_in.name
     project.description = project_in.description
     project.is_completed = project_in.is_completed
+    project.featured = project_in.featured
     if project_in.content is not None:
         project.content = project_in.content
     if project_in.skill_ids is not None:
