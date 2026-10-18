@@ -9,9 +9,10 @@ import { ProjectRead } from "../page"
 interface ProjectCarouselProps {
   projects: ProjectRead[];
   autoplayInterval?: number;
+  featured?: boolean;
 }
 
-export default function ProjectCarousel({ projects, autoplayInterval = 5000 }: ProjectCarouselProps) {
+export default function ProjectCarousel({ projects, autoplayInterval = 5000, featured = false }: ProjectCarouselProps) {
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState(1); // 1 for next page (to the right)
   const [itemsPerPage, setItemsPerPage] = useState(3);
@@ -33,24 +34,36 @@ export default function ProjectCarousel({ projects, autoplayInterval = 5000 }: P
   }, []);
 
   const totalPages = Math.ceil(projects.length / itemsPerPage);
+  const hasProjects = totalPages > 0;
   const startIdx = page * itemsPerPage;
   const visibleProjects = projects.slice(startIdx, startIdx + itemsPerPage);
 
   const handleNext = useCallback(() => {
+    if (!hasProjects) return;
     setDirection(1);
     setPage((prev) => (prev + 1) % totalPages);
-  }, [totalPages]);
+  }, [hasProjects, totalPages]);
   
   const handlePrev = () => {
+    if (!hasProjects) return;
     setDirection(0);
     setPage((prev) => (prev - 1 + totalPages) % totalPages);
   }
 
   // Autoplay the slides
   useEffect(() => {
+    if (totalPages <= 1) return;
     const timer = setInterval(() => handleNext(), autoplayInterval);
     return () => clearInterval(timer);
-  }, [page, autoplayInterval, handleNext])
+  }, [page, totalPages, autoplayInterval, handleNext])
+
+  if (!hasProjects) {
+    return (
+      <div className="rounded-xl border border-white/20 bg-white/10 p-6 text-center text-sm text-white/90">
+        No projects to show yet.
+      </div>
+    );
+  }
 
   return (
     <div className="relative m-1.5">
@@ -94,7 +107,7 @@ export default function ProjectCarousel({ projects, autoplayInterval = 5000 }: P
             className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
           >
             {visibleProjects.map((project, idx) => (
-              <ProjectCard key={idx} {...project} />
+              <ProjectCard key={idx} {...project} featured={featured} />
             ))}
           </motion.div>
         </AnimatePresence>
