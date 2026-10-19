@@ -1,6 +1,7 @@
 # Agent Session Log Index
 
 Newest first.
+- [2026-10-19 — copilot](2026-10-19-copilot.md) — Fix navbar Activity link to use absolute `/activities` route
 - [2026-10-18 — codex](2026-10-18-codex.md) — Fix featured-project migration default after diagnosing existing-row failure
 - [2026-10-09 — copilot-2](2026-10-09-copilot-2.md) — Add backend-backed featured project field and admin toggle
 - [2026-10-09 — copilot](2026-10-09-copilot.md) — Add featured projects section and card emphasis
